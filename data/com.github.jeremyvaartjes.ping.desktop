@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Ping!
+GenericName=API Tester
+Comment=Test your API against some data
+Categories=Utility;Development;
+Exec=com.github.jeremyvaartjes.ping
+Icon=com.github.jeremyvaartjes.ping
+Terminal=false
+Type=Application
+Keywords=Ping;API;Tester;

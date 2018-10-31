@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2018 Jeremy Vaartjes <jeremy@vaartj.es> -->
+<component type="desktop">
+  <id>com.github.jeremyvaartjes.ping</id>
+  <metadata_license>CC0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>Ping!</name>
+  <summary>Test your API against some data</summary>
+  <description>
+    <p>Ping lets you test your web API with some example data. A helpful tool that lets you degug what part of your API is causing you issues.</p>
+  </description>
+  <developer_name>Jeremy Vaartjes</developer_name>
+  <url type="homepage">https://jeremy.vaartj.es</url>
+</component>
