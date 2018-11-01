@@ -1,11 +1,11 @@
-![Ping! Icon](https://raw.githubusercontent.com/jeremyvaartjes/comgen/master/data/icons/64/com.github.jeremyvaartjes.ping.svg)
+![Ping! Icon](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/data/icons/64/com.github.jeremyvaartjes.ping.svg)
 
 Ping!
 =====
 
 Ping lets you test your web API with some example data. A helpful tool that lets you degug what part of your API is causing you issues.
 
-![Ping! Screenshot](https://raw.githubusercontent.com/jeremyvaartjes/comgen/master/data/screenshot-2.png)
+![Ping! Screenshot](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/data/screenshot-2.png)
 
 Developing and Building
 =======================
