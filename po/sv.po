@@ -1,0 +1,90 @@
+# Swedish translations for com.github.jeremyvaartjes.ping package.
+# Copyright (C) 2018 THE com.github.jeremyvaartjes.ping'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.jeremyvaartjes.ping package.
+# Automatically generated, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.jeremyvaartjes.ping\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-31 16:19+1100\n"
+"PO-Revision-Date: 2018-10-31 12:52+1100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: data/com.github.jeremyvaartjes.ping.desktop.in:3
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:7
+msgid "Ping!"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.desktop.in:4
+msgid "API Tester"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.desktop.in:5
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:8
+msgid "Test your API against some data"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.desktop.in:8
+msgid "com.github.jeremyvaartjes.ping"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.desktop.in:11
+msgid "Ping;API;Tester;"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:10
+msgid ""
+"Ping lets you test your web API with some example data. A helpful tool that "
+"lets you degug what part of your API is causing you issues."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:58
+msgid "Jeremy Vaartjes"
+msgstr ""
+
+#: src/Application.vala:148
+msgid "URL"
+msgstr ""
+
+#: src/Application.vala:149
+msgid "Method"
+msgstr ""
+
+#: src/Application.vala:150
+msgid "Content Type"
+msgstr ""
+
+#: src/Application.vala:152
+msgid "Start testing your API."
+msgstr ""
+
+#: src/Application.vala:163
+msgid "General"
+msgstr ""
+
+#: src/Application.vala:164
+msgid "Post Data"
+msgstr ""
+
+#: src/Application.vala:200
+msgid "Create a Test"
+msgstr ""
+
+#: src/Application.vala:200
+msgid "Create a HTTP request to send to and API."
+msgstr ""
+
+#: src/PingTest.vala:100
+msgid "New API Test"
+msgstr ""
+
+#: src/PingTest.vala:117
+msgid "Cannot load file: "
+msgstr ""

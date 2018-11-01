@@ -24,6 +24,9 @@ public class PingTest {
     private string _requestType;
     private string _data;
     private string _contentType;
+    private uint _testStatus;
+    private bool _inProgress;
+    private double _loadTime;
 
     public string name {
         get { return _name; }
@@ -46,7 +49,7 @@ public class PingTest {
             }
         }
     }
-    
+
     public string requestType {
         get { return _requestType; }
         set {
@@ -57,7 +60,7 @@ public class PingTest {
             }
         }
     }
-    
+
     public string data {
         get { return _data; }
         set {
@@ -68,7 +71,7 @@ public class PingTest {
             }
         }
     }
-    
+
     public string contentType {
         get { return _contentType; }
         set {
@@ -82,6 +85,9 @@ public class PingTest {
 
     public int id { get { return _id; } }
     public string output { get { return _output; } set { _output = value; } }
+    public uint testStatus { get { return _testStatus; } set { _testStatus = value; } }
+    public bool inProgress { get { return _inProgress; } set { _inProgress = value; } }
+    public double loadTime { get { return _loadTime; } set { _loadTime = value; } }
 
     public PingTest () throws Error{
         var counter = 1;
@@ -97,12 +103,15 @@ public class PingTest {
                 file.create(FileCreateFlags.NONE);
 
                 _id = counter;
-                _name = "New API Test";
+                _name = _("New API Test");
                 _url = "";
                 _output = "";
+                _testStatus = 0;
                 _requestType = "GET";
                 _data = "";
                 _contentType = "application/json";
+                _inProgress = false;
+                _loadTime = 0;
                 this.outputToFile();
                 done = true;
             } else {
@@ -114,7 +123,7 @@ public class PingTest {
     public PingTest.load(int id) throws IOError {
         var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + id.to_string());
         if (!file.query_exists ()){
-            throw new IOError.NOT_FOUND("Cannot load file: " + id.to_string());
+            throw new IOError.NOT_FOUND(_("Cannot load file: ") + id.to_string());
         } else {
             _id = id;
             Json.Parser parser = new Json.Parser ();
@@ -127,6 +136,9 @@ public class PingTest {
             _data = obj.get_string_member ("data");
             _contentType = obj.get_string_member ("contentType");
             _output = "";
+            _testStatus = 0;
+            _inProgress = false;
+            _loadTime = 0;
         }
     }
 
@@ -160,20 +172,20 @@ public class PingTest {
             while ((name = dir.read_name ()) != null) {
                 string path = Path.build_filename (directory, name);
 
-			    if (FileUtils.test (path, FileTest.IS_REGULAR)) {
-				    list.add(int.parse(name));
-			    }
-		    }
-	    } catch (FileError err) {
-		    stderr.printf (err.message);
-	    }
+                if (FileUtils.test (path, FileTest.IS_REGULAR)) {
+                    list.add(int.parse(name));
+                }
+            }
+        } catch (FileError err) {
+            stderr.printf (err.message);
+        }
 
-	    return list;
+        return list;
     }
-    
+
     private void outputToFile() throws Error{
         Json.Builder builder = new Json.Builder ();
-        
+
         builder.begin_object ();
         builder.set_member_name ("name");
         builder.add_string_value (_name);
@@ -186,7 +198,7 @@ public class PingTest {
         builder.set_member_name ("contentType");
         builder.add_string_value (_contentType);
         builder.end_object ();
-        
+
         Json.Generator generator = new Json.Generator ();
         Json.Node root = builder.get_root ();
         generator.set_root (root);

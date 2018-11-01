@@ -1,0 +1,4 @@
+data/com.github.jeremyvaartjes.ping.desktop.in
+data/com.github.jeremyvaartjes.ping.appdata.xml.in
+src/Application.vala
+src/PingTest.vala
