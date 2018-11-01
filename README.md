@@ -1,4 +1,4 @@
-![Ping! Icon](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/data/icons/64/com.github.jeremyvaartjes.ping.svg)
+![Ping! Icon](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/ping.png)
 
 Ping!
 =====
