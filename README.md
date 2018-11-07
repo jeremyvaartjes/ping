@@ -5,6 +5,8 @@ Ping!
 
 Ping lets you test your web API with some example data. A helpful tool that lets you degug what part of your API is causing you issues.
 
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.jeremyvaartjes.ping)﻿
+
 ![Ping! Screenshot](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/data/screenshot-2.png)
 
 Developing and Building
