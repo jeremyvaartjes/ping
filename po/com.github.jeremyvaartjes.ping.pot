@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 16:19+1100\n"
+"POT-Creation-Date: 2018-11-08 23:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,42 +49,58 @@ msgstr ""
 msgid "Jeremy Vaartjes"
 msgstr ""
 
-#: src/Application.vala:148
+#: src/Application.vala:171
 msgid "URL"
 msgstr ""
 
-#: src/Application.vala:149
+#: src/Application.vala:172
 msgid "Method"
 msgstr ""
 
-#: src/Application.vala:150
+#: src/Application.vala:173
 msgid "Content Type"
 msgstr ""
 
-#: src/Application.vala:152
+#: src/Application.vala:176
 msgid "Start testing your API."
 msgstr ""
 
-#: src/Application.vala:163
+#: src/Application.vala:177
+msgid "Test has not been run"
+msgstr ""
+
+#: src/Application.vala:192
 msgid "General"
 msgstr ""
 
-#: src/Application.vala:164
-msgid "Post Data"
+#: src/Application.vala:193
+msgid "Request Body Data"
 msgstr ""
 
-#: src/Application.vala:200
+#: src/Application.vala:241
 msgid "Create a Test"
 msgstr ""
 
-#: src/Application.vala:200
+#: src/Application.vala:241
 msgid "Create a HTTP request to send to and API."
 msgstr ""
 
-#: src/PingTest.vala:100
+#: src/Application.vala:305
+msgid "Invalid URL"
+msgstr ""
+
+#: src/Application.vala:560
+msgid "HTTP Status"
+msgstr ""
+
+#: src/Application.vala:560
+msgid "Time"
+msgstr ""
+
+#: src/PingTest.vala:121
 msgid "New API Test"
 msgstr ""
 
-#: src/PingTest.vala:117
+#: src/PingTest.vala:141
 msgid "Cannot load file: "
 msgstr ""

@@ -1,19 +1,34 @@
 /*
-* Copyright (c) 2018 Jeremy Vaartjes <jeremy@vaartj.es>
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ *                   __ 
+ *   _____ _        |  |
+ *  |  _  |_|___ ___|  |
+ *  |   __| |   | . |__|
+ *  |__|  |_|_|_|_  |__|
+ *              |___|   
+ *         Version 0.1.1
+ *  
+ *  Jeremy Vaartjes <jeremy@vaartj.es>
+ *  
+ *  ====================
+ *  
+ *  Copyright (C) 2018 Jeremy Vaartjes
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *  
+ *  ====================
+ *  
+ */
 
 public class PingApp : Gtk.Application {
 
@@ -46,6 +61,7 @@ public class PingApp : Gtk.Application {
     Gtk.Label contentLabel;
     Gtk.Label outputLabel;
     Gtk.ScrolledWindow outputScrolled;
+    Gtk.ScrolledWindow dataScrolled;
     Granite.Widgets.Welcome welcome;
     Gtk.Spinner outputSpinner;
     Gtk.InfoBar errorBar;
@@ -156,6 +172,7 @@ public class PingApp : Gtk.Application {
         methodLabel = new Gtk.Label(_("Method"));
         contentLabel = new Gtk.Label(_("Content Type"));
         outputScrolled = new Gtk.ScrolledWindow (null, null);
+        dataScrolled = new Gtk.ScrolledWindow (null, null);
         welcome = new Granite.Widgets.Welcome ("Ping!", _("Start testing your API."));
         outputLabel = new Gtk.Label(_("Test has not been run"));
         outputSpinner = new Gtk.Spinner ();
@@ -175,11 +192,12 @@ public class PingApp : Gtk.Application {
         viewButton.append_text(_("General"));
         viewButton.append_text(_("Request Body Data"));
         viewButton.set_active(0);
-        outputView.wrap_mode = Gtk.WrapMode.WORD;
+        outputView.wrap_mode = Gtk.WrapMode.WORD_CHAR;
         outputView.show_line_numbers = true;
         outputView.editable = false;
         dataEntry.expand = true;
         dataEntry.show_line_numbers = true;
+        dataEntry.wrap_mode = Gtk.WrapMode.WORD_CHAR;
         requestTypes.append (out iterReq);
         requestTypes.set (iterReq, 0, "GET");
         requestTypes.append (out iterReq);
@@ -219,6 +237,7 @@ public class PingApp : Gtk.Application {
         methodLabel.xalign = 0;
         contentLabel.xalign = 0;
         outputScrolled.add(outputView);
+        dataScrolled.add(dataEntry);
         welcome.append ("document-new", _("Create a Test"), _("Create a HTTP request to send to and API."));
         outputSpinner.active = true;
         errorBar.message_type = Gtk.MessageType.ERROR;
@@ -502,7 +521,7 @@ public class PingApp : Gtk.Application {
         generalBox.pack_start(requestTypePicker, false, false, 0);
         generalBox.pack_start(contentLabel, false, false, 0);
         generalBox.pack_start(contentTypePicker, false, false, 0);
-        dataBox.pack_start(dataEntry, true, true, 0);
+        dataBox.pack_start(dataScrolled, true, true, 0);
         outputBox.pack_start(outputLabel, true, true, 0);
         outputBox.pack_start(outputSpinner, true, false, 0);
         outputBox.pack_start(outputScrolled, true, true, 0);
