@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 23:48+1100\n"
+"POT-Creation-Date: 2018-11-09 12:04+1100\n"
 "PO-Revision-Date: 2018-10-31 12:52+1100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -51,59 +51,75 @@ msgstr ""
 msgid "Jeremy Vaartjes"
 msgstr "Jeremy Vaartjes"
 
-#: src/Application.vala:171
+#: src/Application.vala:195
 msgid "URL"
 msgstr ""
 
-#: src/Application.vala:172
+#: src/Application.vala:196
 msgid "Method"
 msgstr ""
 
-#: src/Application.vala:173
+#: src/Application.vala:197
 msgid "Content Type"
 msgstr ""
 
-#: src/Application.vala:176
+#: src/Application.vala:201
 msgid "Start testing your API."
 msgstr ""
 
-#: src/Application.vala:177
+#: src/Application.vala:202
 msgid "Test has not been run"
 msgstr ""
 
-#: src/Application.vala:192
+#: src/Application.vala:217
 msgid "General"
 msgstr ""
 
-#: src/Application.vala:193
+#: src/Application.vala:218
 msgid "Request Body Data"
 msgstr ""
 
-#: src/Application.vala:241
+#: src/Application.vala:220
+msgid "Response Body"
+msgstr ""
+
+#: src/Application.vala:221
+msgid "Response Headers"
+msgstr ""
+
+#: src/Application.vala:264
+msgid "Header"
+msgstr ""
+
+#: src/Application.vala:265
+msgid "Value"
+msgstr ""
+
+#: src/Application.vala:273
 msgid "Create a Test"
 msgstr ""
 
-#: src/Application.vala:241
+#: src/Application.vala:273
 msgid "Create a HTTP request to send to and API."
 msgstr ""
 
-#: src/Application.vala:305
+#: src/Application.vala:347
 msgid "Invalid URL"
 msgstr ""
 
-#: src/Application.vala:560
+#: src/Application.vala:619
 msgid "HTTP Status"
 msgstr ""
 
-#: src/Application.vala:560
+#: src/Application.vala:619
 msgid "Time"
 msgstr ""
 
-#: src/PingTest.vala:121
+#: src/PingTest.vala:123
 #, fuzzy
 msgid "New API Test"
 msgstr "API Tester"
 
-#: src/PingTest.vala:141
+#: src/PingTest.vala:143
 msgid "Cannot load file: "
 msgstr ""

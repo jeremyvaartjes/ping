@@ -1,3 +1,10 @@
+com.github.jeremyvaartjes.ping (0.2) bionic; urgency=medium
+
+  * Fixed the data entry view and output view character wrapping to ensure a usable window area.
+  * You can now see a list of headers returned by the server.
+
+ -- Jeremy Vaartjes <jeremy@vaartj.es>  Fri, 09 Nov 2018 12:08:07 +1100
+
 com.github.jeremyvaartjes.ping (0.1) bionic; urgency=medium
 
   * Initial Release.

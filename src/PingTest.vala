@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.1.1
+ *         Version 0.2.0
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -42,6 +42,7 @@ public class PingTest {
     private uint _testStatus;
     private bool _inProgress;
     private double _loadTime;
+    private Gee.TreeMap<string,string> _headers;
 
     public string name {
         get { return _name; }
@@ -103,6 +104,7 @@ public class PingTest {
     public uint testStatus { get { return _testStatus; } set { _testStatus = value; } }
     public bool inProgress { get { return _inProgress; } set { _inProgress = value; } }
     public double loadTime { get { return _loadTime; } set { _loadTime = value; } }
+    public Gee.TreeMap<string,string> headers { get { return _headers; } set { _headers = value; } }
 
     public PingTest () throws Error{
         var counter = 1;
