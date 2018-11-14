@@ -352,7 +352,7 @@ public class PingApp : Gtk.Application {
                     var start = get_monotonic_time ();
                     session.queue_message (message, (sess, mess) => {
                         var end = get_monotonic_time ();
-                        testObjs[id].loadTime = (end - start) / 1000000.0;
+                        testObjs[id].loadTime = Math.round((end - start) / 1000.0)/1000.0;
                         testObjs[id].testStatus = mess.status_code;
                         testObjs[id].output = ((string) mess.response_body.data).make_valid();
                         testObjs[id].inProgress = false;
@@ -616,7 +616,7 @@ public class PingApp : Gtk.Application {
                     outputStatusBar.visible = true;
                     outputViewButton.visible = true;
                     outputStatusBar.remove_all(1);
-                    outputStatusBar.push(1, _("HTTP Status") + " " + testObjs[id].testStatus.to_string() + " | " + _("Time") + " " + testObjs[id].loadTime.to_string() + "s");
+                    outputStatusBar.push(1, _("HTTP Status") + " " + testObjs[id].testStatus.to_string() + " | " + _("Time") + " " + "%.3f".printf(testObjs[id].loadTime) + "s");
                 }
             }
         }else{
