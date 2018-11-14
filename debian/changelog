@@ -1,3 +1,10 @@
+com.github.jeremyvaartjes.ping (0.3) bionic; urgency=medium
+
+  * The response time is now rounded to 3 decimal places.
+  * You can now add custom headers to the request object.
+
+ -- Jeremy Vaartjes <jeremy@vaartj.es>  Wed, 14 Nov 2018 23:08:07 +1100
+
 com.github.jeremyvaartjes.ping (0.2) bionic; urgency=medium
 
   * Fixed the data entry view and output view character wrapping to ensure a usable window area.

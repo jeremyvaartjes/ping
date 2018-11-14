@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-09 12:04+1100\n"
+"POT-Creation-Date: 2018-11-14 23:09+1100\n"
 "PO-Revision-Date: 2018-10-31 12:52+1100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,78 +44,86 @@ msgid ""
 "lets you degug what part of your API is causing you issues."
 msgstr ""
 
-#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:58
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:61
 msgid "Jeremy Vaartjes"
 msgstr ""
 
-#: src/Application.vala:195
+#: src/Application.vala:227
 msgid "URL"
 msgstr ""
 
-#: src/Application.vala:196
+#: src/Application.vala:228
 msgid "Method"
 msgstr ""
 
-#: src/Application.vala:197
+#: src/Application.vala:229
 msgid "Content Type"
 msgstr ""
 
-#: src/Application.vala:201
+#: src/Application.vala:234
 msgid "Start testing your API."
 msgstr ""
 
-#: src/Application.vala:202
+#: src/Application.vala:235
 msgid "Test has not been run"
 msgstr ""
 
-#: src/Application.vala:217
+#: src/Application.vala:250
 msgid "General"
 msgstr ""
 
-#: src/Application.vala:218
+#: src/Application.vala:251
 msgid "Request Body Data"
 msgstr ""
 
-#: src/Application.vala:220
+#: src/Application.vala:252
+msgid "Request Headers"
+msgstr ""
+
+#: src/Application.vala:254
 msgid "Response Body"
 msgstr ""
 
-#: src/Application.vala:221
+#: src/Application.vala:255
 msgid "Response Headers"
 msgstr ""
 
-#: src/Application.vala:264
+#: src/Application.vala:298 src/Application.vala:303
 msgid "Header"
 msgstr ""
 
-#: src/Application.vala:265
+#: src/Application.vala:299 src/Application.vala:304 src/Application.vala:532
 msgid "Value"
 msgstr ""
 
-#: src/Application.vala:273
+#: src/Application.vala:314
 msgid "Create a Test"
 msgstr ""
 
-#: src/Application.vala:273
+#: src/Application.vala:314
 msgid "Create a HTTP request to send to and API."
 msgstr ""
 
-#: src/Application.vala:347
+#: src/Application.vala:382
 msgid "Invalid URL"
 msgstr ""
 
-#: src/Application.vala:619
+#: src/Application.vala:528 src/Application.vala:532
+msgid "New Header"
+msgstr ""
+
+#: src/Application.vala:777
 msgid "HTTP Status"
 msgstr ""
 
-#: src/Application.vala:619
+#: src/Application.vala:777
 msgid "Time"
 msgstr ""
 
-#: src/PingTest.vala:123
+#: src/PingTest.vala:134
 msgid "New API Test"
 msgstr ""
 
-#: src/PingTest.vala:143
+#: src/PingTest.vala:156
 msgid "Cannot load file: "
 msgstr ""

@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.2.0
+ *         Version 0.3.0
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -42,7 +42,8 @@ public class PingTest {
     private uint _testStatus;
     private bool _inProgress;
     private double _loadTime;
-    private Gee.TreeMap<string,string> _headers;
+    private Gee.TreeMap<string,string> _responseHeaders;
+    private Gee.TreeMap<string,string> _requestHeaders;
 
     public string name {
         get { return _name; }
@@ -104,7 +105,17 @@ public class PingTest {
     public uint testStatus { get { return _testStatus; } set { _testStatus = value; } }
     public bool inProgress { get { return _inProgress; } set { _inProgress = value; } }
     public double loadTime { get { return _loadTime; } set { _loadTime = value; } }
-    public Gee.TreeMap<string,string> headers { get { return _headers; } set { _headers = value; } }
+    public Gee.TreeMap<string,string> responseHeaders { get { return _responseHeaders; } set { _responseHeaders = value; } }
+    public Gee.TreeMap<string,string> requestHeaders {
+        get { return _requestHeaders; }
+        set {
+            var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
+            if (file.query_exists ()){
+                _requestHeaders = value;
+                this.outputToFile();
+            }
+        }
+    }
 
     public PingTest () throws Error{
         var counter = 1;
@@ -129,6 +140,8 @@ public class PingTest {
                 _contentType = "application/json";
                 _inProgress = false;
                 _loadTime = 0;
+                _responseHeaders = new Gee.TreeMap<string,string>();
+                _requestHeaders = new Gee.TreeMap<string,string>();
                 this.outputToFile();
                 done = true;
             } else {
@@ -156,6 +169,12 @@ public class PingTest {
             _testStatus = 0;
             _inProgress = false;
             _loadTime = 0;
+            _responseHeaders = new Gee.TreeMap<string,string>();
+            _requestHeaders = new Gee.TreeMap<string,string>();
+            Json.Object headerObj = obj.get_object_member("headers");
+            foreach (string name in headerObj.get_members ()) {
+                _requestHeaders[name] = headerObj.get_string_member (name);
+            }
         }
     }
 
@@ -214,6 +233,13 @@ public class PingTest {
         builder.add_string_value (_data);
         builder.set_member_name ("contentType");
         builder.add_string_value (_contentType);
+        builder.set_member_name ("headers");
+        builder.begin_object ();
+        foreach (var entry in _requestHeaders.entries) {
+            builder.set_member_name (entry.key);
+            builder.add_string_value (entry.value);
+        }
+        builder.end_object ();
         builder.end_object ();
 
         Json.Generator generator = new Json.Generator ();
