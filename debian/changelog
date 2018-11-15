@@ -1,3 +1,9 @@
+com.github.jeremyvaartjes.ping (0.4) bionic; urgency=medium
+
+  * You can now use the URL encoded form format.
+
+ -- Jeremy Vaartjes <jeremy@vaartj.es>  Thu, 15 Nov 2018 16:24:50 +1100
+
 com.github.jeremyvaartjes.ping (0.3) bionic; urgency=medium
 
   * The response time is now rounded to 3 decimal places.

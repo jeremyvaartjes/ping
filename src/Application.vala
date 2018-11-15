@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.3.0
+ *         Version 0.4.0
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -52,6 +52,7 @@ public class PingApp : Gtk.Application {
     Gtk.TreeView testListView;
     Gtk.TreeView outputHeaderView;
     Gtk.TreeView inputHeaderView;
+    Gtk.TreeView urlencodeView;
     Gtk.SourceView dataEntry;
     Gtk.ComboBox requestTypePicker;
     Gtk.ComboBox contentTypePicker;
@@ -59,12 +60,17 @@ public class PingApp : Gtk.Application {
     Gtk.CellRendererText outputHeaderListCell;
     Gtk.CellRendererText inputHeaderListCell;
     Gtk.CellRendererText inputHeaderValueListCell;
+    Gtk.CellRendererText urlencodeCell;
+    Gtk.CellRendererText urlencodeValueCell;
     Gtk.Button newTestButton;
     Gtk.Button deleteTestButton;
     Gtk.ActionBar testListActions;
     Gtk.Button newInputHeaderButton;
     Gtk.Button deleteInputHeaderButton;
     Gtk.ActionBar inputHeaderActions;
+    Gtk.Button newUrlencodeButton;
+    Gtk.Button deleteUrlencodeButton;
+    Gtk.ActionBar urlencodeActions;
     Gtk.Grid gridLeftPane;
     Gtk.Label urlLabel;
     Gtk.Label methodLabel;
@@ -74,6 +80,7 @@ public class PingApp : Gtk.Application {
     Gtk.ScrolledWindow dataScrolled;
     Gtk.ScrolledWindow outputHeaderScrolled;
     Gtk.ScrolledWindow inputHeaderScrolled;
+    Gtk.ScrolledWindow urlencodeScrolled;
     Granite.Widgets.Welcome welcome;
     Gtk.Spinner outputSpinner;
     Gtk.InfoBar errorBar;
@@ -86,6 +93,7 @@ public class PingApp : Gtk.Application {
     Gtk.ListStore test_list_store;
     Gtk.ListStore output_header_list_store;
     Gtk.ListStore input_header_list_store;
+    Gtk.ListStore urlencode_list_store;
     Gtk.TreeIter iter;
     Gtk.SourceBuffer outputBuffer;
     Gtk.SourceBuffer dataBuffer;
@@ -184,6 +192,25 @@ public class PingApp : Gtk.Application {
         }
     }
 
+    public void updateUrlencodeList(){
+        Gtk.TreeModel model;
+        Gtk.TreeIter iter;
+        int id;
+        if(testListView.get_selection().get_selected (out model, out iter)){
+            model.get (iter, 0, out id);
+            urlencode_list_store.clear();
+            Gee.TreeMap<string,string> temp = new Gee.TreeMap<string,string>();
+            Soup.Form.decode(testObjs[id].data).foreach ((key, val) => {
+                temp[key] = val;
+            });
+            foreach (var entry in temp.entries) {
+                urlencode_list_store.append (out iter);
+                urlencode_list_store.set (iter, 0, entry.key, 1, entry.value);
+            }
+            urlencodeView.set_model(urlencode_list_store);
+        }
+    }
+
     private void createElements(){
         main_window = new Gtk.ApplicationWindow (this);
         mainBox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
@@ -217,12 +244,19 @@ public class PingApp : Gtk.Application {
         inputHeaderView = new Gtk.TreeView.with_model (input_header_list_store);
         inputHeaderListCell = new Gtk.CellRendererText ();
         inputHeaderValueListCell = new Gtk.CellRendererText ();
+        urlencode_list_store = new Gtk.ListStore (2, typeof (string), typeof (string));
+        urlencodeView = new Gtk.TreeView.with_model (urlencode_list_store);
+        urlencodeCell = new Gtk.CellRendererText ();
+        urlencodeValueCell = new Gtk.CellRendererText ();
         newTestButton = new Gtk.Button.from_icon_name("list-add", Gtk.IconSize.BUTTON);
         deleteTestButton = new Gtk.Button.from_icon_name("list-remove", Gtk.IconSize.BUTTON);
         testListActions = new Gtk.ActionBar();
         newInputHeaderButton = new Gtk.Button.from_icon_name("list-add", Gtk.IconSize.BUTTON);
         deleteInputHeaderButton = new Gtk.Button.from_icon_name("list-remove", Gtk.IconSize.BUTTON);
         inputHeaderActions = new Gtk.ActionBar();
+        newUrlencodeButton = new Gtk.Button.from_icon_name("list-add", Gtk.IconSize.BUTTON);
+        deleteUrlencodeButton = new Gtk.Button.from_icon_name("list-remove", Gtk.IconSize.BUTTON);
+        urlencodeActions = new Gtk.ActionBar();
         gridLeftPane = new Gtk.Grid ();
         urlLabel = new Gtk.Label(_("URL"));
         methodLabel = new Gtk.Label(_("Method"));
@@ -231,6 +265,7 @@ public class PingApp : Gtk.Application {
         dataScrolled = new Gtk.ScrolledWindow (null, null);
         outputHeaderScrolled = new Gtk.ScrolledWindow (null, null);
         inputHeaderScrolled = new Gtk.ScrolledWindow (null, null);
+        urlencodeScrolled = new Gtk.ScrolledWindow (null, null);
         welcome = new Granite.Widgets.Welcome ("Ping!", _("Start testing your API."));
         outputLabel = new Gtk.Label(_("Test has not been run"));
         outputSpinner = new Gtk.Spinner ();
@@ -282,8 +317,8 @@ public class PingApp : Gtk.Application {
         contentTypes.set (iterCont, 0, "JSON");
         contentTypes.append (out iterCont);
         contentTypes.set (iterCont, 0, "XML");
-        //contentTypes.append (out iterCont);
-        //contentTypes.set (iterCont, 0, "Form URL Encoded");
+        contentTypes.append (out iterCont);
+        contentTypes.set (iterCont, 0, "Form URL Encoded");
         //contentTypes.append (out iterCont);
         //contentTypes.set (iterCont, 0, "Multipart Form");
         Gtk.CellRendererText contentTypeRenderer = new Gtk.CellRendererText ();
@@ -302,14 +337,21 @@ public class PingApp : Gtk.Application {
         inputHeaderValueListCell.editable = true;
         inputHeaderView.insert_column_with_attributes (-1, _("Header"), inputHeaderListCell, "text", 0);
         inputHeaderView.insert_column_with_attributes (-1, _("Value"), inputHeaderValueListCell, "text", 1);
+        urlencodeView.expand = true;
+        urlencodeCell.editable = true;
+        urlencodeValueCell.editable = true;
+        urlencodeView.insert_column_with_attributes (-1, _("Variable"), urlencodeCell, "text", 0);
+        urlencodeView.insert_column_with_attributes (-1, _("Value"), urlencodeValueCell, "text", 1);
         testListActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
         inputHeaderActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
+        urlencodeActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
         urlLabel.xalign = 0;
         methodLabel.xalign = 0;
         contentLabel.xalign = 0;
         outputScrolled.add(outputView);
         outputHeaderScrolled.add(outputHeaderView);
         inputHeaderScrolled.add(inputHeaderView);
+        urlencodeScrolled.add(urlencodeView);
         dataScrolled.add(dataEntry);
         welcome.append ("document-new", _("Create a Test"), _("Create a HTTP request to send to and API."));
         outputSpinner.active = true;
@@ -361,17 +403,17 @@ public class PingApp : Gtk.Application {
                     message = new Soup.Message ("GET", testObjs[id].url);
                 }else if(testObjs[id].requestType == "POST"){
                     message = new Soup.Message ("POST", testObjs[id].url);
-                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, dataBuffer.text.data);
+                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
                 }else if(testObjs[id].requestType == "PUT"){
                     message = new Soup.Message ("PUT", testObjs[id].url);
-                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, dataBuffer.text.data);
+                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
                 }else if(testObjs[id].requestType == "HEAD"){
                     message = new Soup.Message ("HEAD", testObjs[id].url);
                 }else if(testObjs[id].requestType == "DELETE"){
                     message = new Soup.Message ("DELETE", testObjs[id].url);
                 }else if(testObjs[id].requestType == "PATCH"){
                     message = new Soup.Message ("PATCH", testObjs[id].url);
-                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, dataBuffer.text.data);
+                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
                 }else if(testObjs[id].requestType == "OPTIONS"){
                     message = new Soup.Message ("OPTIONS", testObjs[id].url);
                 }else{
@@ -492,11 +534,11 @@ public class PingApp : Gtk.Application {
                 model.get (iter, 0, out id);
                 if(contentTypePicker.active == 0){
                     testObjs[id].contentType = "application/json";
-                }else {// if(contentTypePicker.active == 1){
+                }else if(contentTypePicker.active == 1){
                     testObjs[id].contentType = "application/xml";
-                }//else if(contentTypePicker.active == 2){
-                //    testObjs[id].contentType = "application/x-www-form-urlencoded";
-                //}else{
+                }else{// if(contentTypePicker.active == 2){
+                    testObjs[id].contentType = "application/x-www-form-urlencoded";
+                }//else{
                 //    testObjs[id].contentType = "multipart/form-data";
                 //}
 
@@ -542,9 +584,6 @@ public class PingApp : Gtk.Application {
             int id;
             if(testListView.get_selection().get_selected (out model, out iter)){
                 model.get (iter, 0, out id);
-
-                Gtk.TreeModel modelHeader;
-                Gtk.TreeIter iterHeader;
                 string headerName;
                 if(inputHeaderView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out headerName);
@@ -564,9 +603,6 @@ public class PingApp : Gtk.Application {
             int id;
             if(testListView.get_selection().get_selected (out model, out iter)){
                 model.get (iter, 0, out id);
-
-                Gtk.TreeModel modelHeader;
-                Gtk.TreeIter iterHeader;
                 string headerName;
                 if(inputHeaderView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out headerName);
@@ -587,9 +623,6 @@ public class PingApp : Gtk.Application {
             int id;
             if(testListView.get_selection().get_selected (out model, out iter)){
                 model.get (iter, 0, out id);
-
-                Gtk.TreeModel modelHeader;
-                Gtk.TreeIter iterHeader;
                 string headerName;
                 if(inputHeaderView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out headerName);
@@ -597,6 +630,82 @@ public class PingApp : Gtk.Application {
                     tempHeaderList[headerName] = new_text;
                     testObjs[id].requestHeaders = tempHeaderList;
                     updateRequestHeaderList();
+                }
+            }
+        });
+
+        urlencodeCell.edited.connect((path, new_text) => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(urlencodeView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 0, out variableName);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    if(!tempDataList.contains(new_text)){
+                        tempDataList[new_text] = tempDataList[variableName];
+                        tempDataList.remove(variableName);
+                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        updateUrlencodeList();
+                    }
+                }
+            }
+        });
+
+        urlencodeValueCell.edited.connect((path, new_text) => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(urlencodeView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 0, out variableName);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    tempDataList[variableName] = new_text;
+                    testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                    updateUrlencodeList();
+                }
+            }
+        });
+
+        newUrlencodeButton.clicked.connect(() => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+
+                HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                int counter = 1;
+                while(tempDataList.contains(_("NewVar") + counter.to_string())){
+                    counter += 1;
+                }
+
+                tempDataList[_("NewVar") + counter.to_string()] = _("Value");
+                testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+
+                updateUrlencodeList();
+            }
+        });
+
+        deleteUrlencodeButton.clicked.connect(() => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(urlencodeView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 0, out variableName);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    if(tempDataList.contains(variableName)){
+                        tempDataList.remove(variableName);
+                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        updateUrlencodeList();
+                    }
                 }
             }
         });
@@ -617,6 +726,8 @@ public class PingApp : Gtk.Application {
         testListActions.pack_end(deleteTestButton);
         inputHeaderActions.pack_end(newInputHeaderButton);
         inputHeaderActions.pack_end(deleteInputHeaderButton);
+        urlencodeActions.pack_end(newUrlencodeButton);
+        urlencodeActions.pack_end(deleteUrlencodeButton);
         gridLeftPane.attach (testListView, 0, 0, 1, 1);
         gridLeftPane.attach (testListActions, 0, 1, 1, 1);
         mainPane.pack1(gridLeftPane, false, false);
@@ -630,6 +741,8 @@ public class PingApp : Gtk.Application {
         generalBox.pack_start(contentLabel, false, false, 0);
         generalBox.pack_start(contentTypePicker, false, false, 0);
         dataBox.pack_start(dataScrolled, true, true, 0);
+        dataBox.pack_start(urlencodeScrolled, true, true, 0);
+        dataBox.pack_start(urlencodeActions, false, false, 0);
         inputHeaderBox.pack_start(inputHeaderScrolled, true, true, 0);
         inputHeaderBox.pack_start(inputHeaderActions, false, false, 0);
         outputBox.pack_start(outputLabel, true, true, 0);
@@ -700,19 +813,34 @@ public class PingApp : Gtk.Application {
                 contentLabel.visible = false;
                 contentTypePicker.visible = false;
             }
-            dataBuffer.text = testObjs[id].data;
+            
             if(testObjs[id].contentType == "application/json"){
                 contentTypePicker.active = 0;
                 dataBuffer.language = langManager.get_language("json");
+                dataBuffer.text = testObjs[id].data;
+                dataScrolled.visible = true;
+                urlencodeScrolled.visible = false;
+                urlencodeActions.visible = false;
             }else if(testObjs[id].contentType == "application/xml"){
                 contentTypePicker.active = 1;
                 dataBuffer.language = langManager.get_language("xml");
+                dataBuffer.text = testObjs[id].data;
+                dataScrolled.visible = true;
+                urlencodeScrolled.visible = false;
+                urlencodeActions.visible = false;
             }else if(testObjs[id].contentType == "application/x-www-form-urlencoded"){
                 contentTypePicker.active = 2;
                 dataBuffer.language = null;
+                updateUrlencodeList();
+                dataScrolled.visible = false;
+                urlencodeScrolled.visible = true;
+                urlencodeActions.visible = true;
             }else{
                 contentTypePicker.active = 3;
                 dataBuffer.language = null;
+                dataScrolled.visible = true;
+                urlencodeScrolled.visible = false;
+                urlencodeActions.visible = false;
             }
 
             if(viewButton.selected == 0){
@@ -815,12 +943,17 @@ public class PingApp : Gtk.Application {
     }
 
     protected void newTest () {
-        PingTest test = new PingTest();
-        testObjs[test.id] = test;
-        updateTestList();
-        selectListItem(test.id);
-        welcome.visible = false;
-        mainPane.visible = true;
+        try {
+            PingTest test = new PingTest();
+            testObjs[test.id] = test;
+            updateTestList();
+            selectListItem(test.id);
+            welcome.visible = false;
+            mainPane.visible = true;
+        } catch (Error e) {
+            errorText.label = e.message;
+            errorBar.revealed = true;
+        }
     }
 
     public static int main (string[] args) {

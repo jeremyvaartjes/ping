@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.3.0
+ *         Version 0.4.0
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
