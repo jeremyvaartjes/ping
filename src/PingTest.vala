@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.4.0
+ *         Version 0.5.0
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -44,6 +44,8 @@ public class PingTest {
     private double _loadTime;
     private Gee.TreeMap<string,string> _responseHeaders;
     private Gee.TreeMap<string,string> _requestHeaders;
+    private string _responseType;
+    private Gee.TreeMap<string,string> _multipartFiles;
 
     public string name {
         get { return _name; }
@@ -116,6 +118,17 @@ public class PingTest {
             }
         }
     }
+    public string responseType { get { return _responseType; } set { _responseType = value; } }
+    public Gee.TreeMap<string,string> multipartFiles {
+        get { return _multipartFiles; }
+        set {
+            var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
+            if (file.query_exists ()){
+                _multipartFiles = value;
+                this.outputToFile();
+            }
+        }
+    }
 
     public PingTest () throws Error{
         var counter = 1;
@@ -142,6 +155,7 @@ public class PingTest {
                 _loadTime = 0;
                 _responseHeaders = new Gee.TreeMap<string,string>();
                 _requestHeaders = new Gee.TreeMap<string,string>();
+                _multipartFiles = new Gee.TreeMap<string,string>();
                 this.outputToFile();
                 done = true;
             } else {
@@ -174,6 +188,14 @@ public class PingTest {
             Json.Object headerObj = obj.get_object_member("headers");
             foreach (string name in headerObj.get_members ()) {
                 _requestHeaders[name] = headerObj.get_string_member (name);
+            }
+            _multipartFiles = new Gee.TreeMap<string,string>();
+            Json.Array multipartArray = obj.get_array_member("multipartFiles");
+            foreach (Json.Node n in multipartArray.get_elements ()) {
+                Json.Object o = n.get_object ();
+                string varName = o.get_string_member("var");
+                string fileName = o.get_string_member("file");
+                _multipartFiles[varName] = fileName;
             }
         }
     }
@@ -240,6 +262,17 @@ public class PingTest {
             builder.add_string_value (entry.value);
         }
         builder.end_object ();
+        builder.set_member_name ("multipartFiles");
+        builder.begin_array ();
+        foreach (var entry in _multipartFiles.entries) {
+            builder.begin_object ();
+            builder.set_member_name ("var");
+            builder.add_string_value (entry.key);
+            builder.set_member_name ("file");
+            builder.add_string_value (entry.value);
+            builder.end_object ();
+        }
+        builder.end_array ();
         builder.end_object ();
 
         Json.Generator generator = new Json.Generator ();

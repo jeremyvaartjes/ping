@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.4.0
+ *         Version 0.5.0
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -53,6 +53,7 @@ public class PingApp : Gtk.Application {
     Gtk.TreeView outputHeaderView;
     Gtk.TreeView inputHeaderView;
     Gtk.TreeView urlencodeView;
+    Gtk.TreeView multipartView;
     Gtk.SourceView dataEntry;
     Gtk.ComboBox requestTypePicker;
     Gtk.ComboBox contentTypePicker;
@@ -62,6 +63,9 @@ public class PingApp : Gtk.Application {
     Gtk.CellRendererText inputHeaderValueListCell;
     Gtk.CellRendererText urlencodeCell;
     Gtk.CellRendererText urlencodeValueCell;
+    Gtk.CellRendererText multipartCell;
+    Gtk.CellRendererText multipartValueCell;
+    Gtk.CellRendererPixbuf multipartTypeCell;
     Gtk.Button newTestButton;
     Gtk.Button deleteTestButton;
     Gtk.ActionBar testListActions;
@@ -71,6 +75,10 @@ public class PingApp : Gtk.Application {
     Gtk.Button newUrlencodeButton;
     Gtk.Button deleteUrlencodeButton;
     Gtk.ActionBar urlencodeActions;
+    Gtk.Button newMultipartButton;
+    Gtk.Button deleteMultipartButton;
+    Gtk.Button newMultipartFileButton;
+    Gtk.ActionBar multipartActions;
     Gtk.Grid gridLeftPane;
     Gtk.Label urlLabel;
     Gtk.Label methodLabel;
@@ -81,6 +89,7 @@ public class PingApp : Gtk.Application {
     Gtk.ScrolledWindow outputHeaderScrolled;
     Gtk.ScrolledWindow inputHeaderScrolled;
     Gtk.ScrolledWindow urlencodeScrolled;
+    Gtk.ScrolledWindow multipartScrolled;
     Granite.Widgets.Welcome welcome;
     Gtk.Spinner outputSpinner;
     Gtk.InfoBar errorBar;
@@ -94,6 +103,7 @@ public class PingApp : Gtk.Application {
     Gtk.ListStore output_header_list_store;
     Gtk.ListStore input_header_list_store;
     Gtk.ListStore urlencode_list_store;
+    Gtk.ListStore multipart_list_store;
     Gtk.TreeIter iter;
     Gtk.SourceBuffer outputBuffer;
     Gtk.SourceBuffer dataBuffer;
@@ -103,10 +113,19 @@ public class PingApp : Gtk.Application {
     Gtk.ListStore contentTypes;
     Gtk.TreeIter iterCont;
 
+    public SimpleActionGroup actions { get; construct; }
+    public const string ACTION_PREFIX = "win.";
+    public const string ACTION_RUN_TEST = "action_run_test";
+    public static Gee.MultiMap<string, string> action_accelerators = new Gee.HashMultiMap<string, string> ();
+    private const ActionEntry[] action_entries = {
+        { ACTION_RUN_TEST, action_run_test }
+    };
+
     public PingApp () {
         Object (
             application_id: "com.github.jeremyvaartjes.ping",
-            flags: ApplicationFlags.FLAGS_NONE
+            flags: ApplicationFlags.FLAGS_NONE,
+            actions: new SimpleActionGroup ()
         );
 
         testObjs = new Gee.TreeMap<int, PingTest>();
@@ -211,6 +230,29 @@ public class PingApp : Gtk.Application {
         }
     }
 
+    public void updateMultipartList(){
+        Gtk.TreeModel model;
+        Gtk.TreeIter iter;
+        int id;
+        if(testListView.get_selection().get_selected (out model, out iter)){
+            model.get (iter, 0, out id);
+            multipart_list_store.clear();
+            Gee.TreeMap<string,string> tempText = new Gee.TreeMap<string,string>();
+            Soup.Form.decode(testObjs[id].data).foreach ((key, val) => {
+                tempText[key] = val;
+            });
+            foreach (var entry in tempText.entries) {
+                multipart_list_store.append (out iter);
+                multipart_list_store.set (iter, 0, "insert-text", 1, entry.key, 2, entry.value);
+            }
+            foreach (var entry in testObjs[id].multipartFiles.entries) {
+                multipart_list_store.append (out iter);
+                multipart_list_store.set (iter, 0, "text-x-preview", 1, entry.key, 2, entry.value);
+            }
+            multipartView.set_model(multipart_list_store);
+        }
+    }
+
     private void createElements(){
         main_window = new Gtk.ApplicationWindow (this);
         mainBox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
@@ -248,15 +290,24 @@ public class PingApp : Gtk.Application {
         urlencodeView = new Gtk.TreeView.with_model (urlencode_list_store);
         urlencodeCell = new Gtk.CellRendererText ();
         urlencodeValueCell = new Gtk.CellRendererText ();
-        newTestButton = new Gtk.Button.from_icon_name("list-add", Gtk.IconSize.BUTTON);
-        deleteTestButton = new Gtk.Button.from_icon_name("list-remove", Gtk.IconSize.BUTTON);
+        multipart_list_store = new Gtk.ListStore (3, typeof (string), typeof (string), typeof (string));
+        multipartView = new Gtk.TreeView.with_model (multipart_list_store);
+        multipartCell = new Gtk.CellRendererText ();
+        multipartValueCell = new Gtk.CellRendererText ();
+        multipartTypeCell = new Gtk.CellRendererPixbuf ();
+        newTestButton = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON);
+        deleteTestButton = new Gtk.Button.from_icon_name("list-remove-symbolic", Gtk.IconSize.BUTTON);
         testListActions = new Gtk.ActionBar();
-        newInputHeaderButton = new Gtk.Button.from_icon_name("list-add", Gtk.IconSize.BUTTON);
-        deleteInputHeaderButton = new Gtk.Button.from_icon_name("list-remove", Gtk.IconSize.BUTTON);
+        newInputHeaderButton = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON);
+        deleteInputHeaderButton = new Gtk.Button.from_icon_name("list-remove-symbolic", Gtk.IconSize.BUTTON);
         inputHeaderActions = new Gtk.ActionBar();
-        newUrlencodeButton = new Gtk.Button.from_icon_name("list-add", Gtk.IconSize.BUTTON);
-        deleteUrlencodeButton = new Gtk.Button.from_icon_name("list-remove", Gtk.IconSize.BUTTON);
+        newUrlencodeButton = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON);
+        deleteUrlencodeButton = new Gtk.Button.from_icon_name("list-remove-symbolic", Gtk.IconSize.BUTTON);
         urlencodeActions = new Gtk.ActionBar();
+        newMultipartButton = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.BUTTON);
+        newMultipartFileButton = new Gtk.Button.from_icon_name("document-new-symbolic", Gtk.IconSize.BUTTON);
+        deleteMultipartButton = new Gtk.Button.from_icon_name("list-remove-symbolic", Gtk.IconSize.BUTTON);
+        multipartActions = new Gtk.ActionBar();
         gridLeftPane = new Gtk.Grid ();
         urlLabel = new Gtk.Label(_("URL"));
         methodLabel = new Gtk.Label(_("Method"));
@@ -266,6 +317,7 @@ public class PingApp : Gtk.Application {
         outputHeaderScrolled = new Gtk.ScrolledWindow (null, null);
         inputHeaderScrolled = new Gtk.ScrolledWindow (null, null);
         urlencodeScrolled = new Gtk.ScrolledWindow (null, null);
+        multipartScrolled = new Gtk.ScrolledWindow (null, null);
         welcome = new Granite.Widgets.Welcome ("Ping!", _("Start testing your API."));
         outputLabel = new Gtk.Label(_("Test has not been run"));
         outputSpinner = new Gtk.Spinner ();
@@ -278,6 +330,12 @@ public class PingApp : Gtk.Application {
         main_window.default_height = 550;
         main_window.default_width = 1000;
         main_window.title = "Ping!";
+        action_accelerators.set (ACTION_RUN_TEST, "<Control>r");
+        actions.add_action_entries (action_entries, this);
+        main_window.insert_action_group ("win", actions);
+        foreach (var action in action_accelerators.get_keys ()) {
+            this.set_accels_for_action (ACTION_PREFIX + action, action_accelerators[action].to_array ());
+        }
         generalBox.margin = 10;
         header.show_close_button = true;
         header.title = "Ping!";
@@ -319,8 +377,8 @@ public class PingApp : Gtk.Application {
         contentTypes.set (iterCont, 0, "XML");
         contentTypes.append (out iterCont);
         contentTypes.set (iterCont, 0, "Form URL Encoded");
-        //contentTypes.append (out iterCont);
-        //contentTypes.set (iterCont, 0, "Multipart Form");
+        contentTypes.append (out iterCont);
+        contentTypes.set (iterCont, 0, "Multipart Form");
         Gtk.CellRendererText contentTypeRenderer = new Gtk.CellRendererText ();
         contentTypePicker.pack_start (contentTypeRenderer, true);
         contentTypePicker.add_attribute (contentTypeRenderer, "text", 0);
@@ -342,9 +400,16 @@ public class PingApp : Gtk.Application {
         urlencodeValueCell.editable = true;
         urlencodeView.insert_column_with_attributes (-1, _("Variable"), urlencodeCell, "text", 0);
         urlencodeView.insert_column_with_attributes (-1, _("Value"), urlencodeValueCell, "text", 1);
+        multipartView.expand = true;
+        multipartCell.editable = true;
+        multipartValueCell.editable = true;
+        multipartView.insert_column_with_attributes (-1, _("Type"), multipartTypeCell, "icon-name", 0);
+        multipartView.insert_column_with_attributes (-1, _("Variable"), multipartCell, "text", 1);
+        multipartView.insert_column_with_attributes (-1, _("Value"), multipartValueCell, "text", 2);
         testListActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
         inputHeaderActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
         urlencodeActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
+        multipartActions.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
         urlLabel.xalign = 0;
         methodLabel.xalign = 0;
         contentLabel.xalign = 0;
@@ -352,6 +417,7 @@ public class PingApp : Gtk.Application {
         outputHeaderScrolled.add(outputHeaderView);
         inputHeaderScrolled.add(inputHeaderView);
         urlencodeScrolled.add(urlencodeView);
+        multipartScrolled.add(multipartView);
         dataScrolled.add(dataEntry);
         welcome.append ("document-new", _("Create a Test"), _("Create a HTTP request to send to and API."));
         outputSpinner.active = true;
@@ -360,6 +426,12 @@ public class PingApp : Gtk.Application {
         errorBar.show_close_button = true;
         outputStatusBar.get_style_context ().add_class (Gtk.STYLE_CLASS_INLINE_TOOLBAR);
         outputStatusBar.margin = 0;
+        runTestButton.action_name = ACTION_PREFIX + ACTION_RUN_TEST;
+        runTestButton.tooltip_markup = Granite.markup_accel_tooltip (this.get_accels_for_action (runTestButton.action_name), _("Run The Test"));
+        Gtk.SourceStyleSchemeManager sourceSchemeMan = Gtk.SourceStyleSchemeManager.get_default();
+        Gtk.SourceStyleScheme sourceTheme = sourceSchemeMan.get_scheme("solarized-light");
+        dataBuffer.style_scheme = sourceTheme;
+        outputBuffer.style_scheme = sourceTheme;
     }
 
     private void setupSignals(){
@@ -388,64 +460,7 @@ public class PingApp : Gtk.Application {
         });
 
         runTestButton.clicked.connect(() => {
-            errorBar.revealed = false;
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-                testObjs[id].inProgress = true;
-                updateOutputPane();
-
-                var session = new Soup.Session ();
-                Soup.Message message;
-                if(testObjs[id].requestType == "GET"){
-                    message = new Soup.Message ("GET", testObjs[id].url);
-                }else if(testObjs[id].requestType == "POST"){
-                    message = new Soup.Message ("POST", testObjs[id].url);
-                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
-                }else if(testObjs[id].requestType == "PUT"){
-                    message = new Soup.Message ("PUT", testObjs[id].url);
-                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
-                }else if(testObjs[id].requestType == "HEAD"){
-                    message = new Soup.Message ("HEAD", testObjs[id].url);
-                }else if(testObjs[id].requestType == "DELETE"){
-                    message = new Soup.Message ("DELETE", testObjs[id].url);
-                }else if(testObjs[id].requestType == "PATCH"){
-                    message = new Soup.Message ("PATCH", testObjs[id].url);
-                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
-                }else if(testObjs[id].requestType == "OPTIONS"){
-                    message = new Soup.Message ("OPTIONS", testObjs[id].url);
-                }else{
-                    message = null;
-                }
-
-                if(message == null){
-                    errorText.label = _("Invalid URL");
-                    errorBar.revealed = true;
-                    testObjs[id].inProgress = false;
-                    updateOutputPane();
-                }else{
-                    foreach (var entry in testObjs[id].requestHeaders.entries) {
-                        message.request_headers.append(entry.key, entry.value);
-                    }
-
-                    var start = get_monotonic_time ();
-                    session.queue_message (message, (sess, mess) => {
-                        var end = get_monotonic_time ();
-                        testObjs[id].loadTime = Math.round((end - start) / 1000.0)/1000.0;
-                        testObjs[id].testStatus = mess.status_code;
-                        testObjs[id].output = ((string) mess.response_body.data).make_valid();
-                        testObjs[id].inProgress = false;
-                        Gee.TreeMap<string,string> responseHeaders = new Gee.TreeMap<string,string>();
-                        mess.response_headers.foreach ((name, val) => {
-                            responseHeaders[name] = val;
-                        });
-                        testObjs[id].responseHeaders = responseHeaders;
-                        updateOutputPane();
-                    });
-                }
-            }
+            action_run_test();
         });
 
         testListCell.edited.connect((path, new_text) => {
@@ -500,6 +515,10 @@ public class PingApp : Gtk.Application {
             }
         });
 
+        urlEntry.activate.connect(() => {
+            action_run_test();
+        });
+
         requestTypePicker.changed.connect(() => {
             Gtk.TreeModel model;
             Gtk.TreeIter iter;
@@ -536,11 +555,11 @@ public class PingApp : Gtk.Application {
                     testObjs[id].contentType = "application/json";
                 }else if(contentTypePicker.active == 1){
                     testObjs[id].contentType = "application/xml";
-                }else{// if(contentTypePicker.active == 2){
+                }else if(contentTypePicker.active == 2){
                     testObjs[id].contentType = "application/x-www-form-urlencoded";
-                }//else{
-                //    testObjs[id].contentType = "multipart/form-data";
-                //}
+                }else{
+                    testObjs[id].contentType = "multipart/form-data";
+                }
 
                 updateInputPane();
             }
@@ -709,6 +728,233 @@ public class PingApp : Gtk.Application {
                 }
             }
         });
+
+        newMultipartButton.clicked.connect(() => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+
+                HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                int counter = 1;
+                while(tempDataList.contains(_("NewVar") + counter.to_string()) || testObjs[id].multipartFiles.has_key(_("NewVar") + counter.to_string())){
+                    counter += 1;
+                }
+
+                tempDataList[_("NewVar") + counter.to_string()] = _("Value");
+                testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+
+                updateMultipartList();
+            }
+        });
+
+        newMultipartFileButton.clicked.connect(() => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+
+                Gee.TreeMap<string,string> tempFileList = testObjs[id].multipartFiles;
+                HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                int counter = 1;
+                while(testObjs[id].multipartFiles.has_key(_("NewVar") + counter.to_string()) || tempDataList.contains(_("NewVar") + counter.to_string())){
+                    counter += 1;
+                }
+
+                tempFileList[_("NewVar") + counter.to_string()] = _("No File");
+                testObjs[id].multipartFiles = tempFileList;
+
+                updateMultipartList();
+            }
+        });
+
+        deleteMultipartButton.clicked.connect(() => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(multipartView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 1, out variableName);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    if(tempDataList.contains(variableName)){
+                        tempDataList.remove(variableName);
+                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        updateMultipartList();
+                    }
+                    if(testObjs[id].multipartFiles.has_key(variableName)){
+                        Gee.TreeMap<string,string> tempMultipartFiles = testObjs[id].multipartFiles;
+                        tempMultipartFiles.unset(variableName);
+                        testObjs[id].multipartFiles = tempMultipartFiles;
+                        updateMultipartList();
+                    }
+                }
+            }
+        });
+
+        multipartCell.edited.connect((path, new_text) => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(multipartView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 1, out variableName);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    if(!tempDataList.contains(new_text) && !testObjs[id].multipartFiles.has_key(new_text)){
+                        if(tempDataList.contains(variableName)){
+                            tempDataList[new_text] = tempDataList[variableName];
+                            tempDataList.remove(variableName);
+                            testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        }else if(testObjs[id].multipartFiles.has_key(variableName)){
+                            Gee.TreeMap<string,string> tempMultipartFiles = testObjs[id].multipartFiles;
+                            tempMultipartFiles[new_text] = tempMultipartFiles[variableName];
+                            tempMultipartFiles.unset(variableName);
+                            testObjs[id].multipartFiles = tempMultipartFiles;
+                        }
+                        
+                        updateMultipartList();
+                    }
+                }
+            }
+        });
+
+        multipartValueCell.edited.connect((path, new_text) => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(multipartView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 1, out variableName);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    if(tempDataList.contains(variableName)){
+                        tempDataList[variableName] = new_text;
+                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                    }
+                    updateMultipartList();
+                }
+            }
+        });
+
+        multipartValueCell.editing_started.connect((cell) => {
+            Gtk.TreeModel model;
+            Gtk.TreeIter iter;
+            int id;
+            if(testListView.get_selection().get_selected (out model, out iter)){
+                model.get (iter, 0, out id);
+                string variableName;
+                if(multipartView.get_selection().get_selected (out model, out iter)){
+                    model.get (iter, 1, out variableName);
+                    if(testObjs[id].multipartFiles.has_key(variableName)){
+                        Gtk.FileChooserDialog chooser = new Gtk.FileChooserDialog (_("Select file to be uploaded"), main_window, Gtk.FileChooserAction.OPEN, _("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT);
+                        if (chooser.run () == Gtk.ResponseType.ACCEPT) {
+                            string fname = chooser.get_filename ();
+                            Gee.TreeMap<string,string> tempMultipartFiles = testObjs[id].multipartFiles;
+                            tempMultipartFiles[variableName] = fname;
+                            testObjs[id].multipartFiles = tempMultipartFiles;
+                        }
+
+                        chooser.close ();
+                        updateMultipartList();
+                        cell.editing_done();
+                    }
+                }
+            }
+        });
+    }
+
+    public void action_run_test(){
+        errorBar.revealed = false;
+        Gtk.TreeModel model;
+        Gtk.TreeIter iter;
+        int id;
+        if(testListView.get_selection().get_selected (out model, out iter)){
+            model.get (iter, 0, out id);
+            testObjs[id].inProgress = true;
+            updateOutputPane();
+
+            var session = new Soup.Session ();
+            Soup.Message message;
+            if(testObjs[id].requestType == "GET"){
+                message = new Soup.Message ("GET", testObjs[id].url);
+            }else if(testObjs[id].requestType == "POST"){
+                if(testObjs[id].contentType == "multipart/form-data"){
+                    // do multipart
+                    message = new Soup.Message ("POST", testObjs[id].url);
+                    Soup.Multipart multipartObj = new Soup.Multipart("multipart/form-data");
+                    Soup.Form.decode(testObjs[id].data).foreach ((key, val) => {
+                        multipartObj.append_form_string(key, val);
+                    });
+                    foreach (var entry in testObjs[id].multipartFiles.entries) {
+                        if(entry.value != _("No File")){
+                            File file = File.new_for_path (entry.value);
+                            try {
+                                uint8[] contents;
+                                file.load_contents (null, out contents, null);
+                                FileInfo info = file.query_info ("*", 0);
+                                Soup.Buffer buf = new Soup.Buffer.take (contents);
+                                multipartObj.append_form_file(entry.key, file.get_basename(), info.get_content_type(), buf);
+                            } catch (Error e) {
+                                print ("Error: %s\n", e.message);
+                                errorText.label = e.message;
+                                errorBar.revealed = true;
+                            }
+                        }
+                    }
+                    multipartObj.to_message(message.request_headers, message.request_body);
+                }else{
+                    message = new Soup.Message ("POST", testObjs[id].url);
+                    message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
+                }
+            }else if(testObjs[id].requestType == "PUT"){
+                message = new Soup.Message ("PUT", testObjs[id].url);
+                message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
+            }else if(testObjs[id].requestType == "HEAD"){
+                message = new Soup.Message ("HEAD", testObjs[id].url);
+            }else if(testObjs[id].requestType == "DELETE"){
+                message = new Soup.Message ("DELETE", testObjs[id].url);
+            }else if(testObjs[id].requestType == "PATCH"){
+                message = new Soup.Message ("PATCH", testObjs[id].url);
+                message.set_request(testObjs[id].contentType, Soup.MemoryUse.COPY, testObjs[id].data.data);
+            }else if(testObjs[id].requestType == "OPTIONS"){
+                message = new Soup.Message ("OPTIONS", testObjs[id].url);
+            }else{
+                message = null;
+            }
+
+            if(message == null){
+                errorText.label = _("Invalid URL");
+                errorBar.revealed = true;
+                testObjs[id].inProgress = false;
+                updateOutputPane();
+            }else{
+                foreach (var entry in testObjs[id].requestHeaders.entries) {
+                    message.request_headers.append(entry.key, entry.value);
+                }
+
+                var start = get_monotonic_time ();
+                session.queue_message (message, (sess, mess) => {
+                    var end = get_monotonic_time ();
+                    testObjs[id].loadTime = Math.round((end - start) / 1000.0)/1000.0;
+                    testObjs[id].testStatus = mess.status_code;
+                    testObjs[id].output = ((string) mess.response_body.data).make_valid();
+                    testObjs[id].inProgress = false;
+                    Gee.TreeMap<string,string> responseHeaders = new Gee.TreeMap<string,string>();
+                    mess.response_headers.foreach ((name, val) => {
+                        responseHeaders[name] = val;
+                    });
+                    testObjs[id].responseHeaders = responseHeaders;
+                    testObjs[id].responseType = mess.response_headers.get_content_type(null);
+                    updateOutputPane();
+                });
+            }
+        }
     }
 
     private void layoutWindow(){
@@ -728,6 +974,9 @@ public class PingApp : Gtk.Application {
         inputHeaderActions.pack_end(deleteInputHeaderButton);
         urlencodeActions.pack_end(newUrlencodeButton);
         urlencodeActions.pack_end(deleteUrlencodeButton);
+        multipartActions.pack_end(newMultipartButton);
+        multipartActions.pack_end(newMultipartFileButton);
+        multipartActions.pack_end(deleteMultipartButton);
         gridLeftPane.attach (testListView, 0, 0, 1, 1);
         gridLeftPane.attach (testListActions, 0, 1, 1, 1);
         mainPane.pack1(gridLeftPane, false, false);
@@ -743,6 +992,8 @@ public class PingApp : Gtk.Application {
         dataBox.pack_start(dataScrolled, true, true, 0);
         dataBox.pack_start(urlencodeScrolled, true, true, 0);
         dataBox.pack_start(urlencodeActions, false, false, 0);
+        dataBox.pack_start(multipartScrolled, true, true, 0);
+        dataBox.pack_start(multipartActions, false, false, 0);
         inputHeaderBox.pack_start(inputHeaderScrolled, true, true, 0);
         inputHeaderBox.pack_start(inputHeaderActions, false, false, 0);
         outputBox.pack_start(outputLabel, true, true, 0);
@@ -821,6 +1072,8 @@ public class PingApp : Gtk.Application {
                 dataScrolled.visible = true;
                 urlencodeScrolled.visible = false;
                 urlencodeActions.visible = false;
+                multipartScrolled.visible = false;
+                multipartActions.visible = false;
             }else if(testObjs[id].contentType == "application/xml"){
                 contentTypePicker.active = 1;
                 dataBuffer.language = langManager.get_language("xml");
@@ -828,6 +1081,8 @@ public class PingApp : Gtk.Application {
                 dataScrolled.visible = true;
                 urlencodeScrolled.visible = false;
                 urlencodeActions.visible = false;
+                multipartScrolled.visible = false;
+                multipartActions.visible = false;
             }else if(testObjs[id].contentType == "application/x-www-form-urlencoded"){
                 contentTypePicker.active = 2;
                 dataBuffer.language = null;
@@ -835,12 +1090,17 @@ public class PingApp : Gtk.Application {
                 dataScrolled.visible = false;
                 urlencodeScrolled.visible = true;
                 urlencodeActions.visible = true;
+                multipartScrolled.visible = false;
+                multipartActions.visible = false;
             }else{
                 contentTypePicker.active = 3;
                 dataBuffer.language = null;
-                dataScrolled.visible = true;
+                updateMultipartList();
+                dataScrolled.visible = false;
                 urlencodeScrolled.visible = false;
                 urlencodeActions.visible = false;
+                multipartScrolled.visible = true;
+                multipartActions.visible = true;
             }
 
             if(viewButton.selected == 0){
@@ -890,6 +1150,15 @@ public class PingApp : Gtk.Application {
                     updateResponseHeaderList();
 
                     outputBuffer.text = testObjs[id].output;
+                    if(testObjs[id].responseType == "application/json"){
+                        Json.Node json;
+                        try {
+                            json = Json.from_string(outputBuffer.text);
+                            outputBuffer.text = Json.to_string(json,true);
+                        } catch (Error e) {
+                            stdout.printf ("Unable to parse the string: %s\n", e.message);
+                        }
+                    }
                     if(outputViewButton.selected == 0){
                         outputScrolled.visible = true;
                         outputHeaderScrolled.visible = false;

@@ -1,3 +1,13 @@
+com.github.jeremyvaartjes.ping (0.5) bionic; urgency=medium
+
+  * Multipart forms are now supported.
+  * You can now upload a file with a multipart form
+  * SourceView areas now use a nicer colour scheme.
+  * If the content type of the response is detected to be JSON then we prettify the JSON.
+  * You can now press ctrl-r to execute a test. Pressing enter in the URL field will do the same.
+
+ -- Jeremy Vaartjes <jeremy@vaartj.es>  Sun, 02 Dec 2018 00:24:45 +1100
+
 com.github.jeremyvaartjes.ping (0.4) bionic; urgency=medium
 
   * You can now use the URL encoded form format.
