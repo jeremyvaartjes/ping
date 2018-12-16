@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: Brazil\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
@@ -78,7 +78,7 @@ msgstr "Geral"
 
 #: src/Application.vala:344
 msgid "Request Body Data"
-msgstr "Dados do Corpo da Requisição"
+msgstr "Corpo da Requisição"
 
 #: src/Application.vala:345
 msgid "Request Headers"
@@ -129,7 +129,7 @@ msgstr "Novo Cabeçalho"
 #: src/Application.vala:702 src/Application.vala:706 src/Application.vala:741
 #: src/Application.vala:745 src/Application.vala:762 src/Application.vala:766
 msgid "NewVar"
-msgstr ""
+msgstr "variavel"
 
 #: src/Application.vala:766 src/Application.vala:895
 msgid "No File"
