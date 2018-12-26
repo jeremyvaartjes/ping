@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.5.0
+ *         Version 0.5.1
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -457,10 +457,6 @@ public class PingApp : Gtk.Application {
                 model.get (iter, 0, out id);
                 testObjs[id].data = dataBuffer.text;
             }
-        });
-
-        runTestButton.clicked.connect(() => {
-            action_run_test();
         });
 
         testListCell.edited.connect((path, new_text) => {
