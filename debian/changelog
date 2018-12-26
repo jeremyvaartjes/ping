@@ -1,3 +1,9 @@
+com.github.jeremyvaartjes.ping (0.5.1) bionic; urgency=medium
+
+  * Fixed request being made twice when clicking run button
+
+ -- Jeremy Vaartjes <jeremy@vaartj.es>  Sun, 26 Dec 2018 19:02:34 +1100
+
 com.github.jeremyvaartjes.ping (0.5) bionic; urgency=medium
 
   * Multipart forms are now supported.

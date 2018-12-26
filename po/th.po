@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-02 00:18+1100\n"
+"POT-Creation-Date: 2018-12-26 19:00+1100\n"
 "PO-Revision-Date: 2018-10-31 12:52+1100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,7 +44,7 @@ msgid ""
 "lets you degug what part of your API is causing you issues."
 msgstr ""
 
-#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:64
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:58
 msgid "Jeremy Vaartjes"
 msgstr ""
 
@@ -93,8 +93,8 @@ msgid "Header"
 msgstr ""
 
 #: src/Application.vala:392 src/Application.vala:397 src/Application.vala:402
-#: src/Application.vala:408 src/Application.vala:593 src/Application.vala:706
-#: src/Application.vala:745
+#: src/Application.vala:408 src/Application.vala:589 src/Application.vala:702
+#: src/Application.vala:741
 msgid "Value"
 msgstr ""
 
@@ -118,40 +118,40 @@ msgstr ""
 msgid "Run The Test"
 msgstr ""
 
-#: src/Application.vala:589 src/Application.vala:593
+#: src/Application.vala:585 src/Application.vala:589
 msgid "New Header"
 msgstr ""
 
-#: src/Application.vala:702 src/Application.vala:706 src/Application.vala:741
-#: src/Application.vala:745 src/Application.vala:762 src/Application.vala:766
+#: src/Application.vala:698 src/Application.vala:702 src/Application.vala:737
+#: src/Application.vala:741 src/Application.vala:758 src/Application.vala:762
 msgid "NewVar"
 msgstr ""
 
-#: src/Application.vala:766 src/Application.vala:895
+#: src/Application.vala:762 src/Application.vala:891
 msgid "No File"
 msgstr ""
 
-#: src/Application.vala:855
+#: src/Application.vala:851
 msgid "Select file to be uploaded"
 msgstr ""
 
-#: src/Application.vala:855
+#: src/Application.vala:851
 msgid "_Cancel"
 msgstr ""
 
-#: src/Application.vala:855
+#: src/Application.vala:851
 msgid "_Open"
 msgstr ""
 
-#: src/Application.vala:932
+#: src/Application.vala:928
 msgid "Invalid URL"
 msgstr ""
 
-#: src/Application.vala:1174
+#: src/Application.vala:1170
 msgid "HTTP Status"
 msgstr ""
 
-#: src/Application.vala:1174
+#: src/Application.vala:1170
 msgid "Time"
 msgstr ""
 
