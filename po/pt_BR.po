@@ -39,7 +39,7 @@ msgstr ""
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:11
 msgid "Ping;API;Tester;"
-msgstr "Ping;API;Testador"
+msgstr "Ping;API;Testador;"
 
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:10
 msgid ""
