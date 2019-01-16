@@ -1,165 +1,167 @@
 # French translations for com.github.jeremyvaartjes.ping package.
-# Copyright (C) 2018 THE com.github.jeremyvaartjes.ping'S COPYRIGHT HOLDER
+# Copyright (C) 2019 THE com.github.jeremyvaartjes.ping'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.jeremyvaartjes.ping package.
-# Automatically generated, 2018.
+# NathanBnm, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-26 19:00+1100\n"
-"PO-Revision-Date: 2018-10-31 12:52+1100\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2019-01-16 21:52+0100\n"
+"Last-Translator: NathanBnm\n"
+"Language-Team: Français\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:3
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:7
 msgid "Ping!"
-msgstr ""
+msgstr "Ping!"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:4
 msgid "API Tester"
-msgstr ""
+msgstr "Testeur d'API"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:5
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:8
 msgid "Test your API against some data"
-msgstr ""
+msgstr "Testez votre API par rapport à certaines données"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:8
 msgid "com.github.jeremyvaartjes.ping"
-msgstr ""
+msgstr "com.github.jeremyvaartjes.ping"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:11
 msgid "Ping;API;Tester;"
-msgstr ""
+msgstr "Ping;API;Tester;"
 
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:10
 msgid ""
 "Ping lets you test your web API with some example data. A helpful tool that "
 "lets you degug what part of your API is causing you issues."
 msgstr ""
+"Ping vous permet de tester votre API web avec des données d'exemple. Un outil utile qui "
+"vous permet de déterminer quelle partie de votre API vous cause des problèmes."
 
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:58
 msgid "Jeremy Vaartjes"
-msgstr ""
+msgstr "Jeremy Vaartjes"
 
 #: src/Application.vala:312
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/Application.vala:313
 msgid "Method"
-msgstr ""
+msgstr "Méthode"
 
 #: src/Application.vala:314
 msgid "Content Type"
-msgstr ""
+msgstr "Type de contenu"
 
 #: src/Application.vala:321
 msgid "Start testing your API."
-msgstr ""
+msgstr "Commencez à tester votre API."
 
 #: src/Application.vala:322
 msgid "Test has not been run"
-msgstr ""
+msgstr "Le test n'a pas été lancé"
 
 #: src/Application.vala:343
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 #: src/Application.vala:344
 msgid "Request Body Data"
-msgstr ""
+msgstr "Données de requête du corps"
 
 #: src/Application.vala:345
 msgid "Request Headers"
-msgstr ""
+msgstr "Requête des en-têtes"
 
 #: src/Application.vala:347
 msgid "Response Body"
-msgstr ""
+msgstr "Réponse du corps"
 
 #: src/Application.vala:348
 msgid "Response Headers"
-msgstr ""
+msgstr "Réponse des en-têtes"
 
 #: src/Application.vala:391 src/Application.vala:396
 msgid "Header"
-msgstr ""
+msgstr "En-tête"
 
 #: src/Application.vala:392 src/Application.vala:397 src/Application.vala:402
 #: src/Application.vala:408 src/Application.vala:589 src/Application.vala:702
 #: src/Application.vala:741
 msgid "Value"
-msgstr ""
+msgstr "Valeur"
 
 #: src/Application.vala:401 src/Application.vala:407
 msgid "Variable"
-msgstr ""
+msgstr "Variable"
 
 #: src/Application.vala:406
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: src/Application.vala:422
 msgid "Create a Test"
-msgstr ""
+msgstr "Créer un Test"
 
 #: src/Application.vala:422
 msgid "Create a HTTP request to send to and API."
-msgstr ""
+msgstr "Créer une requête HTTP à envoyer à une API."
 
 #: src/Application.vala:430
 msgid "Run The Test"
-msgstr ""
+msgstr "Lancer le Test"
 
 #: src/Application.vala:585 src/Application.vala:589
 msgid "New Header"
-msgstr ""
+msgstr "Nouvel en-tête"
 
 #: src/Application.vala:698 src/Application.vala:702 src/Application.vala:737
 #: src/Application.vala:741 src/Application.vala:758 src/Application.vala:762
 msgid "NewVar"
-msgstr ""
+msgstr "Nouvelle variable"
 
 #: src/Application.vala:762 src/Application.vala:891
 msgid "No File"
-msgstr ""
+msgstr "Aucun fichier"
 
 #: src/Application.vala:851
 msgid "Select file to be uploaded"
-msgstr ""
+msgstr "Séléctionnez le fichier à récupérer"
 
 #: src/Application.vala:851
 msgid "_Cancel"
-msgstr ""
+msgstr "_Annuler"
 
 #: src/Application.vala:851
 msgid "_Open"
-msgstr ""
+msgstr "_Ouvrir"
 
 #: src/Application.vala:928
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL Invalide"
 
 #: src/Application.vala:1170
 msgid "HTTP Status"
-msgstr ""
+msgstr "Statut HTTP"
 
 #: src/Application.vala:1170
 msgid "Time"
-msgstr ""
+msgstr "Temps"
 
 #: src/PingTest.vala:147
 msgid "New API Test"
-msgstr ""
+msgstr "Nouveau Test d'API"
 
 #: src/PingTest.vala:170
 msgid "Cannot load file: "
-msgstr ""
+msgstr "Impossible de charger le fichier :"
