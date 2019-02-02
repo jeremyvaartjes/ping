@@ -1,5 +1,6 @@
-![Ping! Icon](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/ping.png)
+[![Build Status](https://travis-ci.com/jeremyvaartjes/ping.svg?branch=master)](https://travis-ci.com/jeremyvaartjes/ping)
 
+![Ping! Icon](https://raw.githubusercontent.com/jeremyvaartjes/ping/master/ping.png)
 Ping!
 =====
 
