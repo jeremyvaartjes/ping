@@ -5,7 +5,7 @@
  *  |   __| |   | . |__|
  *  |__|  |_|_|_|_  |__|
  *              |___|   
- *         Version 0.5.1
+ *         Version 0.6
  *  
  *  Jeremy Vaartjes <jeremy@vaartj.es>
  *  
@@ -95,6 +95,13 @@ public class PingApp : Gtk.Application {
     Gtk.InfoBar errorBar;
     Gtk.Label errorText;
     Gtk.Statusbar outputStatusBar;
+    Gtk.MenuButton settingsBtn;
+    Gtk.Popover settingsPopover;
+    Gtk.Grid layoutSettings;
+    Gtk.Label indentTabLabel;
+    Gtk.Label indentSizeLabel;
+    Gtk.Switch indentTabSwitch;
+    Gtk.SpinButton indentSizeEntry;
 
     // Data Storage
 
@@ -121,6 +128,8 @@ public class PingApp : Gtk.Application {
         { ACTION_RUN_TEST, action_run_test }
     };
 
+    Settings settings;
+
     public PingApp () {
         Object (
             application_id: "com.github.jeremyvaartjes.ping",
@@ -140,6 +149,8 @@ public class PingApp : Gtk.Application {
         }
 
         langManager = Gtk.SourceLanguageManager.get_default();
+
+        settings = new Settings ();
     }
 
     public void selectFirstListItem(){
@@ -324,6 +335,13 @@ public class PingApp : Gtk.Application {
         errorBar = new Gtk.InfoBar ();
         errorText = new Gtk.Label("");
         outputStatusBar = new Gtk.Statusbar ();
+        settingsBtn = new Gtk.MenuButton();
+        settingsPopover = new Gtk.Popover(settingsBtn);
+        layoutSettings = new Gtk.Grid ();
+        indentTabLabel = new Gtk.Label(_("Use tabs for indentation"));
+        indentSizeLabel = new Gtk.Label(_("Indentation/tab size"));
+        indentTabSwitch = new Gtk.Switch();
+        indentSizeEntry = new Gtk.SpinButton.with_range(1, 20, 1);
     }
 
     private void configureElements(){
@@ -351,12 +369,16 @@ public class PingApp : Gtk.Application {
         outputView.show_line_numbers = true;
         outputView.editable = false;
         outputView.monospace = true;
-        outputView.tab_width = 4;
+        outputView.tab_width = settings.indent_width;
+        outputView.indent_width = settings.indent_width;
+        outputView.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
         dataEntry.expand = true;
         dataEntry.show_line_numbers = true;
         dataEntry.wrap_mode = Gtk.WrapMode.WORD_CHAR;
         dataEntry.monospace = true;
-        dataEntry.tab_width = 4;
+        dataEntry.tab_width = settings.indent_width;
+        dataEntry.indent_width = settings.indent_width;
+        dataEntry.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
         requestTypes.append (out iterReq);
         requestTypes.set (iterReq, 0, "GET");
         requestTypes.append (out iterReq);
@@ -436,6 +458,15 @@ public class PingApp : Gtk.Application {
         Gtk.SourceStyleScheme sourceTheme = sourceSchemeMan.get_scheme("solarized-light");
         dataBuffer.style_scheme = sourceTheme;
         outputBuffer.style_scheme = sourceTheme;
+        layoutSettings.row_spacing = 10;
+        layoutSettings.column_spacing = 10;
+        layoutSettings.margin = 10;
+        settingsPopover.add(layoutSettings);
+        settingsBtn.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
+        settingsBtn.popover = settingsPopover;
+        indentTabSwitch.halign = Gtk.Align.START;
+        indentTabSwitch.state = settings.indent_use_tabs;
+        indentSizeEntry.value = settings.indent_width;
     }
 
     private void setupSignals(){
@@ -867,6 +898,20 @@ public class PingApp : Gtk.Application {
                 }
             }
         });
+
+        settings.schema.bind ("indent-use-tabs", indentTabSwitch, "state", SettingsBindFlags.DEFAULT);
+        settings.schema.changed["indent-use-tabs"].connect (() => {
+            outputView.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
+            dataEntry.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
+        });
+
+        indentSizeEntry.value_changed.connect(() => {
+            settings.indent_width = (int)indentSizeEntry.value;
+            outputView.tab_width = settings.indent_width;
+            outputView.indent_width = settings.indent_width;
+            dataEntry.tab_width = settings.indent_width;
+            dataEntry.indent_width = settings.indent_width;
+        });
     }
 
     public void action_run_test(){
@@ -967,6 +1012,7 @@ public class PingApp : Gtk.Application {
         mainPane.pack2(apiPane, true, false);
         header.pack_start(runTestButton);
         header.pack_start(viewButton);
+        header.pack_end(settingsBtn);
         header.pack_end(outputViewButton);
         testListActions.pack_end(newTestButton);
         testListActions.pack_end(deleteTestButton);
@@ -1006,6 +1052,11 @@ public class PingApp : Gtk.Application {
 
         gridLeftPane.set_size_request(180, -1);
         apiPane.set_position((main_window.default_width - 180) / 2);
+        layoutSettings.attach (indentTabLabel, 0, 0, 1, 1);
+        layoutSettings.attach (indentTabSwitch, 1, 0, 1, 1);
+        layoutSettings.attach (indentSizeLabel, 0, 1, 1, 1);
+        layoutSettings.attach (indentSizeEntry, 1, 1, 1, 1);
+        layoutSettings.show_all();
     }
 
     private void updateInputPane(){
@@ -1154,8 +1205,14 @@ public class PingApp : Gtk.Application {
                         Json.Node json;
                         Json.Generator generator = new Json.Generator ();
                         generator.pretty = true;
-                        generator.indent_char = '\t';
-                        generator.indent = 1;
+                        if(settings.indent_use_tabs){
+                            generator.indent_char = '\t';
+                            generator.indent = 1;
+                        }else{
+                            generator.indent_char = ' ';
+                            generator.indent = settings.indent_width;
+                        }
+                        
                         try {
                             json = Json.from_string(outputBuffer.text);
                             generator.root = json;

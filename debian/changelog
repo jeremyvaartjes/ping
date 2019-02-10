@@ -1,3 +1,11 @@
+com.github.jeremyvaartjes.ping (0.6) bionic; urgency=medium
+
+  * Source views use monospace font
+  * Indentation style can be customised. By default it is set to tabs with a width of 4 spaces.
+  * French translation from @NathanBnm
+
+ -- Jeremy Vaartjes <jeremy@vaartj.es>  Sun, 10 Feb 2019 22:08:02 +1100
+
 com.github.jeremyvaartjes.ping (0.5.1) bionic; urgency=medium
 
   * Fixed request being made twice when clicking run button

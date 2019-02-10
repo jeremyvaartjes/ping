@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-26 19:00+1100\n"
+"POT-Creation-Date: 2019-02-10 21:51+1100\n"
 "PO-Revision-Date: 2018-10-31 12:52+1100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -50,110 +50,118 @@ msgstr ""
 msgid "Jeremy Vaartjes"
 msgstr ""
 
-#: src/Application.vala:312
+#: src/Application.vala:323
 msgid "URL"
 msgstr ""
 
-#: src/Application.vala:313
+#: src/Application.vala:324
 msgid "Method"
 msgstr ""
 
-#: src/Application.vala:314
+#: src/Application.vala:325
 msgid "Content Type"
 msgstr ""
 
-#: src/Application.vala:321
+#: src/Application.vala:332
 msgid "Start testing your API."
 msgstr ""
 
-#: src/Application.vala:322
+#: src/Application.vala:333
 msgid "Test has not been run"
 msgstr ""
 
-#: src/Application.vala:343
+#: src/Application.vala:341
+msgid "Use tabs for indentation"
+msgstr ""
+
+#: src/Application.vala:342
+msgid "Indentation/tab size"
+msgstr ""
+
+#: src/Application.vala:361
 msgid "General"
 msgstr ""
 
-#: src/Application.vala:344
+#: src/Application.vala:362
 msgid "Request Body Data"
 msgstr ""
 
-#: src/Application.vala:345
+#: src/Application.vala:363
 msgid "Request Headers"
 msgstr ""
 
-#: src/Application.vala:347
+#: src/Application.vala:365
 msgid "Response Body"
 msgstr ""
 
-#: src/Application.vala:348
+#: src/Application.vala:366
 msgid "Response Headers"
 msgstr ""
 
-#: src/Application.vala:391 src/Application.vala:396
+#: src/Application.vala:417 src/Application.vala:422
 msgid "Header"
 msgstr ""
 
-#: src/Application.vala:392 src/Application.vala:397 src/Application.vala:402
-#: src/Application.vala:408 src/Application.vala:589 src/Application.vala:702
-#: src/Application.vala:741
+#: src/Application.vala:418 src/Application.vala:423 src/Application.vala:428
+#: src/Application.vala:434 src/Application.vala:624 src/Application.vala:737
+#: src/Application.vala:776
 msgid "Value"
 msgstr ""
 
-#: src/Application.vala:401 src/Application.vala:407
+#: src/Application.vala:427 src/Application.vala:433
 msgid "Variable"
 msgstr ""
 
-#: src/Application.vala:406
+#: src/Application.vala:432
 msgid "Type"
 msgstr ""
 
-#: src/Application.vala:422
+#: src/Application.vala:448
 msgid "Create a Test"
 msgstr ""
 
-#: src/Application.vala:422
+#: src/Application.vala:448
 msgid "Create a HTTP request to send to and API."
 msgstr ""
 
-#: src/Application.vala:430
+#: src/Application.vala:456
 msgid "Run The Test"
 msgstr ""
 
-#: src/Application.vala:585 src/Application.vala:589
+#: src/Application.vala:620 src/Application.vala:624
 msgid "New Header"
 msgstr ""
 
-#: src/Application.vala:698 src/Application.vala:702 src/Application.vala:737
-#: src/Application.vala:741 src/Application.vala:758 src/Application.vala:762
+#: src/Application.vala:733 src/Application.vala:737 src/Application.vala:772
+#: src/Application.vala:776 src/Application.vala:793 src/Application.vala:797
 msgid "NewVar"
 msgstr ""
 
-#: src/Application.vala:762 src/Application.vala:891
+#: src/Application.vala:797 src/Application.vala:940
 msgid "No File"
 msgstr ""
 
-#: src/Application.vala:851
+#: src/Application.vala:886
 msgid "Select file to be uploaded"
 msgstr ""
 
-#: src/Application.vala:851
+#: src/Application.vala:886
 msgid "_Cancel"
 msgstr ""
 
-#: src/Application.vala:851
+#: src/Application.vala:886
 msgid "_Open"
 msgstr ""
 
-#: src/Application.vala:928
+#: src/Application.vala:977
 msgid "Invalid URL"
 msgstr ""
 
-#: src/Application.vala:1170
+#: src/Application.vala:1236
 msgid "HTTP Status"
 msgstr ""
 
-#: src/Application.vala:1170
+#: src/Application.vala:1236
 msgid "Time"
 msgstr ""
 

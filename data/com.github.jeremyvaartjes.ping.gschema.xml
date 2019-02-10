@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/com/github/jeremyvaartjes/ping/settings/" id="com.github.jeremyvaartjes.ping.settings" gettext-domain="com.github.jeremyvaartjes.ping">
+    <key name="indent-width" type="i">
+      <default>4</default>
+      <summary>Indentation Width</summary>
+      <description>The number of spaces or the size of a tab for the indentation.</description>
+    </key>
+    <key name="indent-use-tabs" type="b">
+      <default>true</default>
+      <summary>Indentation - Use Tabs</summary>
+      <description>Set this to use tabs instead of spaces for indentation.</description>
+    </key>
+  </schema>
+</schemalist>

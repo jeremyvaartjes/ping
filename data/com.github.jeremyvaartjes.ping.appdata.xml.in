@@ -25,6 +25,67 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="0.6" date="2019-02-10">
+      <description>
+        <ul>
+          <li>Source views use monospace font</li>
+          <li>Indentation style can be customised. By default it is set to tabs with a width of 4 spaces.</li>
+          <li>French translation from @NathanBnm</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.5.1" date="2018-12-26">
+      <description>
+        <ul>
+          <li>Fixed request being made twice when clicking run button</li>
+          <li>Brazilian Portuguese translation from @btd1337</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.5" date="2018-12-02">
+      <description>
+        <ul>
+          <li>Multipart forms are now supported.</li>
+          <li>You can now upload a file with a multipart form</li>
+          <li>SourceView areas now use a nicer colour scheme.</li>
+          <li>If the content type of the response is detected to be JSON then we prettify the JSON.</li>
+          <li>You can now press ctrl-r to execute a test. Pressing enter in the URL field will do the same.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.4" date="2018-11-15">
+      <description>
+        <ul>
+          <li>You can now use the URL encoded form format.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.3" date="2018-11-14">
+      <description>
+        <ul>
+          <li>The response time is now rounded to 3 decimal places.</li>
+          <li>You can now add custom headers to the request object.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.2" date="2018-11-09">
+      <description>
+        <ul>
+          <li>Fixed the data entry view and output view character wrapping to ensure a usable window area.</li>
+          <li>You can now see a list of headers returned by the server.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.1" date="2018-11-01">
+      <description>
+        <ul>
+          <li>Initial Release.</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
   <content_rating type="oars-1.1">
     <content_attribute id="violence-cartoon">none</content_attribute>
     <content_attribute id="violence-fantasy">none</content_attribute>
