@@ -350,9 +350,13 @@ public class PingApp : Gtk.Application {
         outputView.wrap_mode = Gtk.WrapMode.WORD_CHAR;
         outputView.show_line_numbers = true;
         outputView.editable = false;
+        outputView.monospace = true;
+        outputView.tab_width = 4;
         dataEntry.expand = true;
         dataEntry.show_line_numbers = true;
         dataEntry.wrap_mode = Gtk.WrapMode.WORD_CHAR;
+        dataEntry.monospace = true;
+        dataEntry.tab_width = 4;
         requestTypes.append (out iterReq);
         requestTypes.set (iterReq, 0, "GET");
         requestTypes.append (out iterReq);
@@ -1148,9 +1152,14 @@ public class PingApp : Gtk.Application {
                     outputBuffer.text = testObjs[id].output;
                     if(testObjs[id].responseType == "application/json"){
                         Json.Node json;
+                        Json.Generator generator = new Json.Generator ();
+                        generator.pretty = true;
+                        generator.indent_char = '\t';
+                        generator.indent = 1;
                         try {
                             json = Json.from_string(outputBuffer.text);
-                            outputBuffer.text = Json.to_string(json,true);
+                            generator.root = json;
+                            outputBuffer.text = generator.to_data(null);
                         } catch (Error e) {
                             stdout.printf ("Unable to parse the string: %s\n", e.message);
                         }
