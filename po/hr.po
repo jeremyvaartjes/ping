@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.jeremyvaartjes.ping\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-10 21:51+1100\n"
+"POT-Creation-Date: 2019-03-02 17:59+1100\n"
 "PO-Revision-Date: 2018-10-31 12:52+1100\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -43,10 +43,82 @@ msgstr ""
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:10
 msgid ""
 "Ping lets you test your web API with some example data. A helpful tool that "
-"lets you degug what part of your API is causing you issues."
+"lets you debug what part of your API is causing you issues."
 msgstr ""
 
-#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:58
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:32
+msgid "Source views use monospace font"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:33
+msgid ""
+"Indentation style can be customised. By default it is set to tabs with a "
+"width of 4 spaces."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:34
+msgid "French translation from @NathanBnm"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:41
+msgid "Fixed request being made twice when clicking run button"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:42
+msgid "Brazilian Portuguese translation from @btd1337"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:49
+msgid "Multipart forms are now supported."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:50
+msgid "You can now upload a file with a multipart form"
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:51
+msgid "SourceView areas now use a nicer colour scheme."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:52
+msgid ""
+"If the content type of the response is detected to be JSON then we prettify "
+"the JSON."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:53
+msgid ""
+"You can now press ctrl-r to execute a test. Pressing enter in the URL field "
+"will do the same."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:60
+msgid "You can now use the URL encoded form format."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:67
+msgid "The response time is now rounded to 3 decimal places."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:68
+msgid "You can now add custom headers to the request object."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:75
+msgid ""
+"Fixed the data entry view and output view character wrapping to ensure a "
+"usable window area."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:76
+msgid "You can now see a list of headers returned by the server."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:83
+msgid "Initial Release."
+msgstr ""
+
+#: data/com.github.jeremyvaartjes.ping.appdata.xml.in:119
 msgid "Jeremy Vaartjes"
 msgstr ""
 
