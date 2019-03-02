@@ -4,7 +4,7 @@
 Ping!
 =====
 
-Ping lets you test your web API with some example data. A helpful tool that lets you degug what part of your API is causing you issues.
+Ping lets you test your web API with some example data. A helpful tool that lets you debug what part of your API is causing you issues.
 
 [![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.jeremyvaartjes.ping)﻿
 
@@ -13,7 +13,7 @@ Ping lets you test your web API with some example data. A helpful tool that lets
 Developing and Building
 =======================
 
-If you want to hack on and build Comgen yourself, you'll need the following dependencies:
+If you want to hack on and build Ping yourself, you'll need the following dependencies:
 
 * libgtk-3-dev
 * meson
