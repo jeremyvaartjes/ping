@@ -10,6 +10,8 @@ executable(
     'src/Application.vala',
     'src/PingTest.vala',
     'src/Settings.vala',
+    'src/OutputPaneView.vala',
+    'src/InputPaneView.vala',
     dependencies: [
         dependency('gtk+-3.0'),
         dependency('gtksourceview-3.0'),
