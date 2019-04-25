@@ -7,7 +7,7 @@ class InputPaneView {
     Gtk.TreeView inputHeaderView;
     Gtk.TreeView urlencodeView;
     Gtk.TreeView multipartView;
-    Gtk.SourceView dataEntry;
+    public Gtk.SourceView dataEntry;
     Gtk.ComboBox requestTypePicker;
     Gtk.ComboBox contentTypePicker;
     Gtk.CellRendererText inputHeaderListCell;
@@ -41,7 +41,11 @@ class InputPaneView {
     Gtk.ListStore requestTypes;
     Gtk.ListStore contentTypes;
 
-    public InputPaneView(int indentWidth, bool useTabs){
+    PingApp *app;
+    PingTest *currentTest;
+
+    public InputPaneView(PingApp *appObj, int indentWidth, bool useTabs){
+        app = appObj;
         inputBox = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         generalBox = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
         dataBox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
@@ -89,9 +93,13 @@ class InputPaneView {
         dataEntry.show_line_numbers = true;
         dataEntry.wrap_mode = Gtk.WrapMode.WORD_CHAR;
         dataEntry.monospace = true;
-        dataEntry.tab_width = settings.indent_width;
-        dataEntry.indent_width = settings.indent_width;
-        dataEntry.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
+        dataEntry.tab_width = app->settings.indent_width;
+        dataEntry.indent_width = app->settings.indent_width;
+        dataEntry.insert_spaces_instead_of_tabs = !app->settings.indent_use_tabs;
+
+        Gtk.TreeIter iterReq;
+        Gtk.TreeIter iterCont;
+
         requestTypes.append (out iterReq);
         requestTypes.set (iterReq, 0, "GET");
         requestTypes.append (out iterReq);
@@ -153,110 +161,87 @@ class InputPaneView {
         dataBuffer.style_scheme = sourceTheme;
 
         dataBuffer.changed.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-                testObjs[id].data = dataBuffer.text;
+            if(currentTest != null){
+                currentTest->data = dataBuffer.text;
             }
         });
 
         urlEntry.changed.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-                if(testObjs[id].url != urlEntry.text){
-                    testObjs[id].url = urlEntry.text;
+            if(currentTest != null){
+                if(currentTest->url != urlEntry.text){
+                    currentTest->url = urlEntry.text;
                 }
             }
         });
 
         urlEntry.activate.connect(() => {
-            action_run_test();
+            app->action_run_test();
         });
 
         requestTypePicker.changed.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
                 if(requestTypePicker.active == 0){
-                    ptestObjs[id].requestType = "GET";
+                    currentTest->requestType = "GET";
                 }else if(requestTypePicker.active == 1){
-                    testObjs[id].requestType = "POST";
+                    currentTest->requestType = "POST";
                 }else if(requestTypePicker.active == 2){
-                    testObjs[id].requestType = "PUT";
+                    currentTest->requestType = "PUT";
                 }else if(requestTypePicker.active == 3){
-                    testObjs[id].requestType = "HEAD";
+                    currentTest->requestType = "HEAD";
                 }else if(requestTypePicker.active == 4){
-                    testObjs[id].requestType = "DELETE";
+                    currentTest->requestType = "DELETE";
                 }else if(requestTypePicker.active == 5){
-                    testObjs[id].requestType = "PATCH";
+                    currentTest->requestType = "PATCH";
                 }else{
-                    testObjs[id].requestType = "OPTIONS";
+                    currentTest->requestType = "OPTIONS";
                 }
 
-                updateInputPane();
+                updatePane();
             }
         });
 
         contentTypePicker.changed.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
                 if(contentTypePicker.active == 0){
-                    testObjs[id].contentType = "application/json";
+                    currentTest->contentType = "application/json";
                 }else if(contentTypePicker.active == 1){
-                    testObjs[id].contentType = "application/xml";
+                    currentTest->contentType = "application/xml";
                 }else if(contentTypePicker.active == 2){
-                    testObjs[id].contentType = "application/x-www-form-urlencoded";
+                    currentTest->contentType = "application/x-www-form-urlencoded";
                 }else{
-                    testObjs[id].contentType = "multipart/form-data";
+                    currentTest->contentType = "multipart/form-data";
                 }
 
-                updateInputPane();
+                updatePane();
             }
         });
 
         newInputHeaderButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-
-                Gee.TreeMap<string,string> tempHeaderList = testObjs[id].requestHeaders;
+            if(currentTest != null){
+                Gee.TreeMap<string,string> tempHeaderList = currentTest->requestHeaders;
                 int counter = 1;
                 while(tempHeaderList.has_key(_("New Header") + " " + counter.to_string())){
                     counter += 1;
                 }
 
                 tempHeaderList[_("New Header") + " " + counter.to_string()] = _("Value");
-                testObjs[id].requestHeaders = tempHeaderList;
+                currentTest->requestHeaders = tempHeaderList;
 
                 updateRequestHeaderList();
             }
         });
 
         deleteInputHeaderButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string headerName;
                 if(inputHeaderView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out headerName);
-                    if(testObjs[id].requestHeaders.has_key(headerName)){
-                        Gee.TreeMap<string,string> tempHeaderList = testObjs[id].requestHeaders;
+                    if(currentTest->requestHeaders.has_key(headerName)){
+                        Gee.TreeMap<string,string> tempHeaderList = currentTest->requestHeaders;
                         tempHeaderList.unset(headerName);
-                        testObjs[id].requestHeaders = tempHeaderList;
+                        currentTest->requestHeaders = tempHeaderList;
                         updateRequestHeaderList();
                     }
                 }
@@ -264,19 +249,17 @@ class InputPaneView {
         });
 
         inputHeaderListCell.edited.connect((path, new_text) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string headerName;
                 if(inputHeaderView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out headerName);
-                    if(!testObjs[id].requestHeaders.has_key(new_text)){
-                        Gee.TreeMap<string,string> tempHeaderList = testObjs[id].requestHeaders;
+                    if(!currentTest->requestHeaders.has_key(new_text)){
+                        Gee.TreeMap<string,string> tempHeaderList = currentTest->requestHeaders;
                         tempHeaderList[new_text] = tempHeaderList[headerName];
                         tempHeaderList.unset(headerName);
-                        testObjs[id].requestHeaders = tempHeaderList;
+                        currentTest->requestHeaders = tempHeaderList;
                         updateRequestHeaderList();
                     }
                 }
@@ -284,36 +267,32 @@ class InputPaneView {
         });
 
         inputHeaderValueListCell.edited.connect((path, new_text) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string headerName;
                 if(inputHeaderView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out headerName);
-                    Gee.TreeMap<string,string> tempHeaderList = testObjs[id].requestHeaders;
+                    Gee.TreeMap<string,string> tempHeaderList = currentTest->requestHeaders;
                     tempHeaderList[headerName] = new_text;
-                    testObjs[id].requestHeaders = tempHeaderList;
+                    currentTest->requestHeaders = tempHeaderList;
                     updateRequestHeaderList();
                 }
             }
         });
 
         urlencodeCell.edited.connect((path, new_text) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(urlencodeView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                     if(!tempDataList.contains(new_text)){
                         tempDataList[new_text] = tempDataList[variableName];
                         tempDataList.remove(variableName);
-                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        currentTest->data = Soup.Form.encode_hash(tempDataList);
                         updateUrlencodeList();
                     }
                 }
@@ -321,55 +300,46 @@ class InputPaneView {
         });
 
         urlencodeValueCell.edited.connect((path, new_text) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(urlencodeView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                     tempDataList[variableName] = new_text;
-                    testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                    currentTest->data = Soup.Form.encode_hash(tempDataList);
                     updateUrlencodeList();
                 }
             }
         });
 
         newUrlencodeButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-
-                HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+            if(currentTest != null){
+                HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                 int counter = 1;
                 while(tempDataList.contains(_("NewVar") + counter.to_string())){
                     counter += 1;
                 }
 
                 tempDataList[_("NewVar") + counter.to_string()] = _("Value");
-                testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                currentTest->data = Soup.Form.encode_hash(tempDataList);
 
                 updateUrlencodeList();
             }
         });
 
         deleteUrlencodeButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(urlencodeView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                     if(tempDataList.contains(variableName)){
                         tempDataList.remove(variableName);
-                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        currentTest->data = Soup.Form.encode_hash(tempDataList);
                         updateUrlencodeList();
                     }
                 }
@@ -377,65 +347,53 @@ class InputPaneView {
         });
 
         newMultipartButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-
-                HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+            if(currentTest != null){
+                HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                 int counter = 1;
-                while(tempDataList.contains(_("NewVar") + counter.to_string()) || testObjs[id].multipartFiles.has_key(_("NewVar") + counter.to_string())){
+                while(tempDataList.contains(_("NewVar") + counter.to_string()) || currentTest->multipartFiles.has_key(_("NewVar") + counter.to_string())){
                     counter += 1;
                 }
 
                 tempDataList[_("NewVar") + counter.to_string()] = _("Value");
-                testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                currentTest->data = Soup.Form.encode_hash(tempDataList);
 
                 updateMultipartList();
             }
         });
 
         newMultipartFileButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
-
-                Gee.TreeMap<string,string> tempFileList = testObjs[id].multipartFiles;
-                HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+            if(currentTest != null){
+                Gee.TreeMap<string,string> tempFileList = currentTest->multipartFiles;
+                HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                 int counter = 1;
-                while(testObjs[id].multipartFiles.has_key(_("NewVar") + counter.to_string()) || tempDataList.contains(_("NewVar") + counter.to_string())){
+                while(currentTest->multipartFiles.has_key(_("NewVar") + counter.to_string()) || tempDataList.contains(_("NewVar") + counter.to_string())){
                     counter += 1;
                 }
 
                 tempFileList[_("NewVar") + counter.to_string()] = _("No File");
-                testObjs[id].multipartFiles = tempFileList;
+                currentTest->multipartFiles = tempFileList;
 
                 updateMultipartList();
             }
         });
 
         deleteMultipartButton.clicked.connect(() => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                     if(tempDataList.contains(variableName)){
                         tempDataList.remove(variableName);
-                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        currentTest->data = Soup.Form.encode_hash(tempDataList);
                         updateMultipartList();
                     }
-                    if(testObjs[id].multipartFiles.has_key(variableName)){
-                        Gee.TreeMap<string,string> tempMultipartFiles = testObjs[id].multipartFiles;
+                    if(currentTest->multipartFiles.has_key(variableName)){
+                        Gee.TreeMap<string,string> tempMultipartFiles = currentTest->multipartFiles;
                         tempMultipartFiles.unset(variableName);
-                        testObjs[id].multipartFiles = tempMultipartFiles;
+                        currentTest->multipartFiles = tempMultipartFiles;
                         updateMultipartList();
                     }
                 }
@@ -443,27 +401,25 @@ class InputPaneView {
         });
 
         multipartCell.edited.connect((path, new_text) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
-                    if(!tempDataList.contains(new_text) && !testObjs[id].multipartFiles.has_key(new_text)){
+                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    if(!tempDataList.contains(new_text) && !currentTest->multipartFiles.has_key(new_text)){
                         if(tempDataList.contains(variableName)){
                             tempDataList[new_text] = tempDataList[variableName];
                             tempDataList.remove(variableName);
-                            testObjs[id].data = Soup.Form.encode_hash(tempDataList);
-                        }else if(testObjs[id].multipartFiles.has_key(variableName)){
-                            Gee.TreeMap<string,string> tempMultipartFiles = testObjs[id].multipartFiles;
+                            currentTest->data = Soup.Form.encode_hash(tempDataList);
+                        }else if(currentTest->multipartFiles.has_key(variableName)){
+                            Gee.TreeMap<string,string> tempMultipartFiles = currentTest->multipartFiles;
                             tempMultipartFiles[new_text] = tempMultipartFiles[variableName];
                             tempMultipartFiles.unset(variableName);
-                            testObjs[id].multipartFiles = tempMultipartFiles;
+                            currentTest->multipartFiles = tempMultipartFiles;
                         }
-                        
+
                         updateMultipartList();
                     }
                 }
@@ -471,18 +427,16 @@ class InputPaneView {
         });
 
         multipartValueCell.edited.connect((path, new_text) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(testObjs[id].data);
+                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
                     if(tempDataList.contains(variableName)){
                         tempDataList[variableName] = new_text;
-                        testObjs[id].data = Soup.Form.encode_hash(tempDataList);
+                        currentTest->data = Soup.Form.encode_hash(tempDataList);
                     }
                     updateMultipartList();
                 }
@@ -490,21 +444,19 @@ class InputPaneView {
         });
 
         multipartValueCell.editing_started.connect((cell) => {
-            Gtk.TreeModel model;
-            Gtk.TreeIter iter;
-            int id;
-            if(testListView.get_selection().get_selected (out model, out iter)){
-                model.get (iter, 0, out id);
+            if(currentTest != null){
+                Gtk.TreeModel model;
+                Gtk.TreeIter iter;
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    if(testObjs[id].multipartFiles.has_key(variableName)){
-                        Gtk.FileChooserDialog chooser = new Gtk.FileChooserDialog (_("Select file to be uploaded"), main_window, Gtk.FileChooserAction.OPEN, _("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT);
+                    if(currentTest->multipartFiles.has_key(variableName)){
+                        Gtk.FileChooserDialog chooser = new Gtk.FileChooserDialog (_("Select file to be uploaded"), app->main_window, Gtk.FileChooserAction.OPEN, _("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT);
                         if (chooser.run () == Gtk.ResponseType.ACCEPT) {
                             string fname = chooser.get_filename ();
-                            Gee.TreeMap<string,string> tempMultipartFiles = testObjs[id].multipartFiles;
+                            Gee.TreeMap<string,string> tempMultipartFiles = currentTest->multipartFiles;
                             tempMultipartFiles[variableName] = fname;
-                            testObjs[id].multipartFiles = tempMultipartFiles;
+                            currentTest->multipartFiles = tempMultipartFiles;
                         }
 
                         chooser.close ();
@@ -541,13 +493,10 @@ class InputPaneView {
     }
 
     public void updateRequestHeaderList(){
-        Gtk.TreeModel model;
-        Gtk.TreeIter iter;
-        int id;
-        if(testListView.get_selection().get_selected (out model, out iter)){
-            model.get (iter, 0, out id);
+        if(currentTest != null){
+            Gtk.TreeIter iter;
             input_header_list_store.clear();
-            foreach (var entry in testObjs[id].requestHeaders.entries) {
+            foreach (var entry in currentTest->requestHeaders.entries) {
                 input_header_list_store.append (out iter);
                 input_header_list_store.set (iter, 0, entry.key, 1, entry.value);
             }
@@ -556,14 +505,11 @@ class InputPaneView {
     }
 
     public void updateUrlencodeList(){
-        Gtk.TreeModel model;
-        Gtk.TreeIter iter;
-        int id;
-        if(testListView.get_selection().get_selected (out model, out iter)){
-            model.get (iter, 0, out id);
+        if(currentTest != null){
+            Gtk.TreeIter iter;
             urlencode_list_store.clear();
             Gee.TreeMap<string,string> temp = new Gee.TreeMap<string,string>();
-            Soup.Form.decode(testObjs[id].data).foreach ((key, val) => {
+            Soup.Form.decode(currentTest->data).foreach ((key, val) => {
                 temp[key] = val;
             });
             foreach (var entry in temp.entries) {
@@ -575,21 +521,18 @@ class InputPaneView {
     }
 
     public void updateMultipartList(){
-        Gtk.TreeModel model;
-        Gtk.TreeIter iter;
-        int id;
-        if(testListView.get_selection().get_selected (out model, out iter)){
-            model.get (iter, 0, out id);
+        if(currentTest != null){
+            Gtk.TreeIter iter;
             multipart_list_store.clear();
             Gee.TreeMap<string,string> tempText = new Gee.TreeMap<string,string>();
-            Soup.Form.decode(testObjs[id].data).foreach ((key, val) => {
+            Soup.Form.decode(currentTest->data).foreach ((key, val) => {
                 tempText[key] = val;
             });
             foreach (var entry in tempText.entries) {
                 multipart_list_store.append (out iter);
                 multipart_list_store.set (iter, 0, "insert-text", 1, entry.key, 2, entry.value);
             }
-            foreach (var entry in testObjs[id].multipartFiles.entries) {
+            foreach (var entry in currentTest->multipartFiles.entries) {
                 multipart_list_store.append (out iter);
                 multipart_list_store.set (iter, 0, "text-x-preview", 1, entry.key, 2, entry.value);
             }
@@ -597,82 +540,79 @@ class InputPaneView {
         }
     }
 
-    private void updateInputPane(){
-        Gtk.TreeModel model;
-        Gtk.TreeIter iter;
-        int id;
-        if(testListView.get_selection().get_selected (out model, out iter)){
-            model.get (iter, 0, out id);
-            urlEntry.text = testObjs[id].url;
+    public void updatePane(){
+        if(currentTest != null){
+            urlEntry.text = currentTest->url;
 
-            if(testObjs[id].requestType == "GET"){
+            if(currentTest->requestType == "GET"){
                 requestTypePicker.active = 0;
-                viewButton.set_item_visible(1, false);
-                if(viewButton.selected == 1){
-                    viewButton.selected = 0;
+                app->viewButton.set_item_visible(1, false);
+                if(app->viewButton.selected == 1){
+                    app->viewButton.selected = 0;
                 }
                 contentLabel.visible = false;
                 contentTypePicker.visible = false;
-            }else if(testObjs[id].requestType == "POST"){
+            }else if(currentTest->requestType == "POST"){
                 requestTypePicker.active = 1;
-                viewButton.set_item_visible(1, true);
+                app->viewButton.set_item_visible(1, true);
                 contentLabel.visible = true;
                 contentTypePicker.visible = true;
-            }else if(testObjs[id].requestType == "PUT"){
+            }else if(currentTest->requestType == "PUT"){
                 requestTypePicker.active = 2;
-                viewButton.set_item_visible(1, true);
+                app->viewButton.set_item_visible(1, true);
                 contentLabel.visible = true;
                 contentTypePicker.visible = true;
-            }else if(testObjs[id].requestType == "HEAD"){
+            }else if(currentTest->requestType == "HEAD"){
                 requestTypePicker.active = 3;
-                viewButton.set_item_visible(1, false);
-                if(viewButton.selected == 1){
-                    viewButton.selected = 0;
+                app->viewButton.set_item_visible(1, false);
+                if(app->viewButton.selected == 1){
+                    app->viewButton.selected = 0;
                 }
                 contentLabel.visible = false;
                 contentTypePicker.visible = false;
-            }else if(testObjs[id].requestType == "DELETE"){
+            }else if(currentTest->requestType == "DELETE"){
                 requestTypePicker.active = 4;
-                viewButton.set_item_visible(1, false);
-                if(viewButton.selected == 1){
-                    viewButton.selected = 0;
+                app->viewButton.set_item_visible(1, false);
+                if(app->viewButton.selected == 1){
+                    app->viewButton.selected = 0;
                 }
                 contentLabel.visible = false;
                 contentTypePicker.visible = false;
-            }else if(testObjs[id].requestType == "PATCH"){
+            }else if(currentTest->requestType == "PATCH"){
                 requestTypePicker.active = 5;
-                viewButton.set_item_visible(1, true);
+                app->viewButton.set_item_visible(1, true);
                 contentLabel.visible = true;
                 contentTypePicker.visible = true;
-            }else if(testObjs[id].requestType == "OPTIONS"){
+            }else if(currentTest->requestType == "OPTIONS"){
                 requestTypePicker.active = 6;
-                viewButton.set_item_visible(1, false);
-                if(viewButton.selected == 1){
-                    viewButton.selected = 0;
+                app->viewButton.set_item_visible(1, false);
+                if(app->viewButton.selected == 1){
+                    app->viewButton.selected = 0;
                 }
                 contentLabel.visible = false;
                 contentTypePicker.visible = false;
             }
-            
-            if(testObjs[id].contentType == "application/json"){
+
+            var langManager = Gtk.SourceLanguageManager.get_default();
+            if(currentTest->contentType == "application/json"){
                 contentTypePicker.active = 0;
                 dataBuffer.language = langManager.get_language("json");
-                dataBuffer.text = testObjs[id].data;
+                dataBuffer.text = currentTest->data;
                 dataScrolled.visible = true;
                 urlencodeScrolled.visible = false;
                 urlencodeActions.visible = false;
                 multipartScrolled.visible = false;
                 multipartActions.visible = false;
-            }else if(testObjs[id].contentType == "application/xml"){
+            }else if(currentTest->contentType == "application/xml"){
                 contentTypePicker.active = 1;
                 dataBuffer.language = langManager.get_language("xml");
-                dataBuffer.text = testObjs[id].data;
+                dataBuffer.text = currentTest->data;
                 dataScrolled.visible = true;
                 urlencodeScrolled.visible = false;
                 urlencodeActions.visible = false;
                 multipartScrolled.visible = false;
                 multipartActions.visible = false;
-            }else if(testObjs[id].contentType == "application/x-www-form-urlencoded"){
+            }else if(currentTest->contentType == "application/x-www-form-urlencoded"){
                 contentTypePicker.active = 2;
                 dataBuffer.language = null;
                 updateUrlencodeList();
@@ -692,15 +632,15 @@ class InputPaneView {
                 multipartActions.visible = true;
             }
 
-            if(viewButton.selected == 0){
+            if(app->viewButton.selected == 0){
                 generalBox.visible = true;
                 dataBox.visible = false;
                 inputHeaderBox.visible = false;
-            }else if(viewButton.selected == 1){
+            }else if(app->viewButton.selected == 1){
                 generalBox.visible = false;
                 dataBox.visible = true;
                 inputHeaderBox.visible = false;
-            }else if(viewButton.selected == 2){
+            }else if(app->viewButton.selected == 2){
                 generalBox.visible = false;
                 dataBox.visible = false;
                 inputHeaderBox.visible = true;
@@ -714,4 +654,11 @@ class InputPaneView {
         }
     }
 
+    public Gtk.Widget getRootWidget(){
+        return inputBox;
+    }
+
+    public void updateCurrentTest(PingTest *newTest){
+        currentTest = newTest;
+    }
 }

@@ -37,7 +37,7 @@ public class PingApp : Gtk.Application {
 
     // Widgets
 
-    Gtk.ApplicationWindow main_window;
+    public Gtk.ApplicationWindow main_window;
     Gtk.Box mainBox;
     //Gtk.Box inputBox;
     //Gtk.Box generalBox;
@@ -47,7 +47,7 @@ public class PingApp : Gtk.Application {
     Gtk.Paned apiPane;
     Gtk.HeaderBar header;
     Gtk.Button runTestButton;
-    Granite.Widgets.ModeButton viewButton;
+    public Granite.Widgets.ModeButton viewButton;
     Granite.Widgets.ModeButton outputViewButton;
     //Gtk.Entry urlEntry;
     Gtk.TreeView testListView;
@@ -107,7 +107,7 @@ public class PingApp : Gtk.Application {
     //Gtk.ListStore multipart_list_store;
     Gtk.TreeIter iter;
     //Gtk.SourceBuffer dataBuffer;
-    Gtk.SourceLanguageManager langManager;
+    //Gtk.SourceLanguageManager langManager;
     //Gtk.ListStore requestTypes;
     //Gtk.TreeIter iterReq;
     //Gtk.ListStore contentTypes;
@@ -121,7 +121,7 @@ public class PingApp : Gtk.Application {
         { ACTION_RUN_TEST, action_run_test }
     };
 
-    Settings settings;
+    public Settings settings;
 
     public PingApp () {
         Object (
@@ -143,7 +143,7 @@ public class PingApp : Gtk.Application {
 
         currentTest = null;
 
-        langManager = Gtk.SourceLanguageManager.get_default();
+        //langManager = Gtk.SourceLanguageManager.get_default();
 
         settings = new Settings ();
     }
@@ -424,7 +424,7 @@ public class PingApp : Gtk.Application {
 
     private void setupSignals(){
         viewButton.mode_changed.connect(() => {
-            updateInputPane();
+            inputView.updatePane();
         });
 
         outputViewButton.mode_changed.connect(() => {
@@ -465,7 +465,8 @@ public class PingApp : Gtk.Application {
             }else{
                 currentTest = null;
             }
-            updateInputPane();
+            inputView.updateCurrentTest(currentTest);
+            inputView.updatePane();
             outputView.updateView(currentTest, outputViewButton);
         });
 
@@ -858,14 +859,14 @@ public class PingApp : Gtk.Application {
         settings.schema.bind ("indent-use-tabs", indentTabSwitch, "state", SettingsBindFlags.DEFAULT);
         settings.schema.changed["indent-use-tabs"].connect (() => {
             outputView.useTabs = !settings.indent_use_tabs;
-            dataEntry.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
+            inputView.dataEntry.insert_spaces_instead_of_tabs = !settings.indent_use_tabs;
         });
 
         indentSizeEntry.value_changed.connect(() => {
             settings.indent_width = (int)indentSizeEntry.value;
             outputView.indentWidth = settings.indent_width;
-            dataEntry.tab_width = settings.indent_width;
-            dataEntry.indent_width = settings.indent_width;
+            inputView.dataEntry.tab_width = settings.indent_width;
+            inputView.dataEntry.indent_width = settings.indent_width;
         });
     }
 
@@ -1135,14 +1136,14 @@ public class PingApp : Gtk.Application {
             welcome.visible = true;
             mainPane.visible = false;
         }
-        
-        updateInputPane();
+
+        inputView.updatePane();
         outputView.updateView(currentTest, outputViewButton);
     }
 
     protected override void activate () {
         //testListView = new TestListView();
-        inputView = new InputPaneView(settings.indent_width, settings.indent_use_tabs);
+        inputView = new InputPaneView(this, settings.indent_width, settings.indent_use_tabs);
         outputView = new OutputPaneView(settings.indent_width, settings.indent_use_tabs);
         createElements();
 
