@@ -53,7 +53,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _name = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -64,7 +68,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _url = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -75,7 +83,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _requestType = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -86,7 +98,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _data = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -97,7 +113,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _contentType = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -114,7 +134,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _requestHeaders = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -125,7 +149,11 @@ public class PingTest {
             var file = File.new_for_path(Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + _id.to_string());
             if (file.query_exists ()){
                 _multipartFiles = value;
-                this.outputToFile();
+                try{
+                    this.outputToFile();
+                }catch(Error e){
+                    stderr.printf ("%s\n", e.message);
+                }
             }
         }
     }
@@ -169,33 +197,37 @@ public class PingTest {
         if (!file.query_exists ()){
             throw new IOError.NOT_FOUND(_("Cannot load file: ") + id.to_string());
         } else {
-            _id = id;
-            Json.Parser parser = new Json.Parser ();
-            parser.load_from_file (Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + id.to_string());
-            Json.Node node = parser.get_root ();
-            Json.Object obj = node.get_object ();
-            _name = obj.get_string_member ("name");
-            _url = obj.get_string_member ("url");
-            _requestType = obj.get_string_member ("requestType");
-            _data = obj.get_string_member ("data");
-            _contentType = obj.get_string_member ("contentType");
-            _output = "";
-            _testStatus = 0;
-            _inProgress = false;
-            _loadTime = 0;
-            _responseHeaders = new Gee.TreeMap<string,string>();
-            _requestHeaders = new Gee.TreeMap<string,string>();
-            Json.Object headerObj = obj.get_object_member("headers");
-            foreach (string name in headerObj.get_members ()) {
-                _requestHeaders[name] = headerObj.get_string_member (name);
-            }
-            _multipartFiles = new Gee.TreeMap<string,string>();
-            Json.Array multipartArray = obj.get_array_member("multipartFiles");
-            foreach (Json.Node n in multipartArray.get_elements ()) {
-                Json.Object o = n.get_object ();
-                string varName = o.get_string_member("var");
-                string fileName = o.get_string_member("file");
-                _multipartFiles[varName] = fileName;
+            try{
+                _id = id;
+                Json.Parser parser = new Json.Parser ();
+                parser.load_from_file (Environment.get_user_data_dir() + "/com.github.jeremyvaartjes.ping/tests/" + id.to_string());
+                Json.Node node = parser.get_root ();
+                Json.Object obj = node.get_object ();
+                _name = obj.get_string_member ("name");
+                _url = obj.get_string_member ("url");
+                _requestType = obj.get_string_member ("requestType");
+                _data = obj.get_string_member ("data");
+                _contentType = obj.get_string_member ("contentType");
+                _output = "";
+                _testStatus = 0;
+                _inProgress = false;
+                _loadTime = 0;
+                _responseHeaders = new Gee.TreeMap<string,string>();
+                _requestHeaders = new Gee.TreeMap<string,string>();
+                Json.Object headerObj = obj.get_object_member("headers");
+                foreach (string name in headerObj.get_members ()) {
+                    _requestHeaders[name] = headerObj.get_string_member (name);
+                }
+                _multipartFiles = new Gee.TreeMap<string,string>();
+                Json.Array multipartArray = obj.get_array_member("multipartFiles");
+                foreach (Json.Node n in multipartArray.get_elements ()) {
+                    Json.Object o = n.get_object ();
+                    string varName = o.get_string_member("var");
+                    string fileName = o.get_string_member("file");
+                    _multipartFiles[varName] = fileName;
+                }
+            }catch(Error e){
+                stderr.printf ("%s\n", e.message);
             }
         }
     }
