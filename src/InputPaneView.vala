@@ -288,7 +288,10 @@ class InputPaneView {
                 string variableName;
                 if(urlencodeView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                    Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                        tempDataList.set (key, value);
+                    });
                     if(!tempDataList.contains(new_text)){
                         tempDataList[new_text] = tempDataList[variableName];
                         tempDataList.remove(variableName);
@@ -306,7 +309,10 @@ class InputPaneView {
                 string variableName;
                 if(urlencodeView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                    Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                        tempDataList.set (key, value);
+                    });
                     tempDataList[variableName] = new_text;
                     currentTest->data = Soup.Form.encode_hash(tempDataList);
                     updateUrlencodeList();
@@ -316,7 +322,10 @@ class InputPaneView {
 
         newUrlencodeButton.clicked.connect(() => {
             if(currentTest != null){
-                HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                    tempDataList.set (key, value);
+                });
                 int counter = 1;
                 while(tempDataList.contains(_("NewVar") + counter.to_string())){
                     counter += 1;
@@ -336,7 +345,10 @@ class InputPaneView {
                 string variableName;
                 if(urlencodeView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 0, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+          Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+              tempDataList.set (key, value);
+          });
                     if(tempDataList.contains(variableName)){
                         tempDataList.remove(variableName);
                         currentTest->data = Soup.Form.encode_hash(tempDataList);
@@ -348,7 +360,10 @@ class InputPaneView {
 
         newMultipartButton.clicked.connect(() => {
             if(currentTest != null){
-                HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                    tempDataList.set (key, value);
+                });
                 int counter = 1;
                 while(tempDataList.contains(_("NewVar") + counter.to_string()) || currentTest->multipartFiles.has_key(_("NewVar") + counter.to_string())){
                     counter += 1;
@@ -364,7 +379,10 @@ class InputPaneView {
         newMultipartFileButton.clicked.connect(() => {
             if(currentTest != null){
                 Gee.TreeMap<string,string> tempFileList = currentTest->multipartFiles;
-                HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                    tempDataList.set (key, value);
+                });
                 int counter = 1;
                 while(currentTest->multipartFiles.has_key(_("NewVar") + counter.to_string()) || tempDataList.contains(_("NewVar") + counter.to_string())){
                     counter += 1;
@@ -384,7 +402,10 @@ class InputPaneView {
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                    Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                        tempDataList.set (key, value);
+                    });
                     if(tempDataList.contains(variableName)){
                         tempDataList.remove(variableName);
                         currentTest->data = Soup.Form.encode_hash(tempDataList);
@@ -407,7 +428,10 @@ class InputPaneView {
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                    Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                        tempDataList.set (key, value);
+                    });
                     if(!tempDataList.contains(new_text) && !currentTest->multipartFiles.has_key(new_text)){
                         if(tempDataList.contains(variableName)){
                             tempDataList[new_text] = tempDataList[variableName];
@@ -433,7 +457,10 @@ class InputPaneView {
                 string variableName;
                 if(multipartView.get_selection().get_selected (out model, out iter)){
                     model.get (iter, 1, out variableName);
-                    HashTable<string,string> tempDataList = Soup.Form.decode(currentTest->data);
+                    var tempDataList = new HashTable<string, string>(str_hash, str_equal);
+                    Soup.Form.decode(currentTest->data).foreach ((key, value) => {
+                        tempDataList.set (key, value);
+                    });
                     if(tempDataList.contains(variableName)){
                         tempDataList[variableName] = new_text;
                         currentTest->data = Soup.Form.encode_hash(tempDataList);
