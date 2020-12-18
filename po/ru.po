@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-02 17:59+1100\n"
 "PO-Revision-Date: 2018-10-31 12:52+1100\n"
-"Last-Translator: Automatically generated\n"
+"Last-Translator: Gennadiy Shishkin <Endless-Lemniscate@yandex.ru>\n"
 "Language-Team: none\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -21,16 +21,16 @@ msgstr ""
 #: data/com.github.jeremyvaartjes.ping.desktop.in:3
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:7
 msgid "Ping!"
-msgstr ""
+msgstr "Ping!"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:4
 msgid "API Tester"
-msgstr ""
+msgstr "Тестировщик API"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:5
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:8
 msgid "Test your API against some data"
-msgstr ""
+msgstr "Протестируй API на своих данных"
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:8
 msgid "com.github.jeremyvaartjes.ping"
@@ -38,13 +38,15 @@ msgstr ""
 
 #: data/com.github.jeremyvaartjes.ping.desktop.in:11
 msgid "Ping;API;Tester;"
-msgstr ""
+msgstr "Ping;API;Тестировщик"
 
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:10
 msgid ""
 "Ping lets you test your web API with some example data. A helpful tool that "
 "lets you debug what part of your API is causing you issues."
 msgstr ""
+"Ping позволит протестировать API используя свои данные. Это полезный инструмент, "
+"который помогает отладить ту часть вашего API, которая вызывает проблемы."
 
 #: data/com.github.jeremyvaartjes.ping.appdata.xml.in:32
 msgid "Source views use monospace font"
@@ -124,123 +126,123 @@ msgstr ""
 
 #: src/Application.vala:323
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/Application.vala:324
 msgid "Method"
-msgstr ""
+msgstr "Метод"
 
 #: src/Application.vala:325
 msgid "Content Type"
-msgstr ""
+msgstr "Content Type"
 
 #: src/Application.vala:332
 msgid "Start testing your API."
-msgstr ""
+msgstr "Начните тестировать API."
 
 #: src/Application.vala:333
 msgid "Test has not been run"
-msgstr ""
+msgstr "Тест не был запущен"
 
 #: src/Application.vala:341
 msgid "Use tabs for indentation"
-msgstr ""
+msgstr "Использовать Tab для отступов"
 
 #: src/Application.vala:342
 msgid "Indentation/tab size"
-msgstr ""
+msgstr "Ширина отступа"
 
 #: src/Application.vala:361
 msgid "General"
-msgstr ""
+msgstr "Общее"
 
 #: src/Application.vala:362
 msgid "Request Body Data"
-msgstr ""
+msgstr "Тело запроса"
 
 #: src/Application.vala:363
 msgid "Request Headers"
-msgstr ""
+msgstr "Заголовки запроса"
 
 #: src/Application.vala:365
 msgid "Response Body"
-msgstr ""
+msgstr "Тело ответа"
 
 #: src/Application.vala:366
 msgid "Response Headers"
-msgstr ""
+msgstr "Заголовки ответа"
 
 #: src/Application.vala:417 src/Application.vala:422
 msgid "Header"
-msgstr ""
+msgstr "Параметр"
 
 #: src/Application.vala:418 src/Application.vala:423 src/Application.vala:428
 #: src/Application.vala:434 src/Application.vala:624 src/Application.vala:737
 #: src/Application.vala:776
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 #: src/Application.vala:427 src/Application.vala:433
 msgid "Variable"
-msgstr ""
+msgstr "Переменная"
 
 #: src/Application.vala:432
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: src/Application.vala:448
 msgid "Create a Test"
-msgstr ""
+msgstr "Создать тест"
 
 #: src/Application.vala:448
 msgid "Create a HTTP request to send to and API."
-msgstr ""
+msgstr "Создать HTTP запрос для отправки в API."
 
 #: src/Application.vala:456
 msgid "Run The Test"
-msgstr ""
+msgstr "Запустить тест"
 
 #: src/Application.vala:620 src/Application.vala:624
 msgid "New Header"
-msgstr ""
+msgstr "Новый заголовок"
 
 #: src/Application.vala:733 src/Application.vala:737 src/Application.vala:772
 #: src/Application.vala:776 src/Application.vala:793 src/Application.vala:797
 msgid "NewVar"
-msgstr ""
+msgstr "NewVar"
 
 #: src/Application.vala:797 src/Application.vala:940
 msgid "No File"
-msgstr ""
+msgstr "Нет файла"
 
 #: src/Application.vala:886
 msgid "Select file to be uploaded"
-msgstr ""
+msgstr "Выберете файл для загрузки"
 
 #: src/Application.vala:886
 msgid "_Cancel"
-msgstr ""
+msgstr "_Отмена"
 
 #: src/Application.vala:886
 msgid "_Open"
-msgstr ""
+msgstr "_Открыть"
 
 #: src/Application.vala:977
 msgid "Invalid URL"
-msgstr ""
+msgstr "Неверный URL"
 
 #: src/Application.vala:1236
 msgid "HTTP Status"
-msgstr ""
+msgstr "HTTP статус"
 
 #: src/Application.vala:1236
 msgid "Time"
-msgstr ""
+msgstr "Время"
 
 #: src/PingTest.vala:147
 msgid "New API Test"
-msgstr ""
+msgstr "Новый API тест"
 
 #: src/PingTest.vala:170
 msgid "Cannot load file: "
-msgstr ""
+msgstr "Неудалось загрузить файл"
